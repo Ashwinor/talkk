@@ -1,82 +1,105 @@
-/* Login / Signup UI */
-.purple-bg {
-    background: linear-gradient(135deg, #7b2ff7, #f107a3);
-    height: 100vh;
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(to top, #2b1055, #5f2c82);
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial;
 }
 
-.card {
-    background: #111;
-    padding: 40px;
-    width: 320px;
-    border-radius: 15px;
-    text-align: center;
-    color: white;
-    box-shadow: 0px 0px 40px rgba(0,0,0,0.5);
+/* forest + stars overlay */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("https://i.ibb.co/7vN6y0q/forest.png") center/cover no-repeat;
+    opacity: 0.2;
+    z-index: -2;
+}
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("https://i.ibb.co/9p7x3sY/stars.png") repeat;
+    opacity: 0.3;
+    z-index: -1;
 }
 
-.card input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: none;
-}
-
-.card button {
-    width: 100%;
-    padding: 12px;
-    border: none;
+/* Glass card */
+.auth-card {
+    width: 360px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px);
     border-radius: 20px;
-    background: #00f2fe;
-    color: black;
-    font-size: 16px;
-    cursor: pointer;
+    padding: 40px 30px;
+    color: white;
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    text-align: center;
 }
 
-.card a {
-    display: block;
-    margin-top: 10px;
-    color: #00f2fe;
-    text-decoration: none;
+.auth-card h2 {
+    margin-bottom: 25px;
+    font-weight: 600;
 }
 
-.error {
-    color: red;
+/* Input box */
+.input-box {
+    position: relative;
+    margin-bottom: 18px;
 }
 
-/* Intro Page */
-.intro-bg {
-    background: black;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-video {
-    width: 420px;
-    max-width: 90%;
-    border-radius: 12px;
-}
-
-.start-btn {
-    margin-top: 20px;
-    padding: 14px 50px;
-    font-size: 18px;
+.input-box input {
+    width: 100%;
+    padding: 14px 40px 14px 14px;
+    border-radius: 30px;
     border: none;
-    border-radius: 40px;
-    background: #00f2fe;
-    color: black;
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 14px;
+}
+
+.input-box input::placeholder {
+    color: #ddd;
+}
+
+.input-box span {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ddd;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    background: white;
+    color: #5f2c82;
+    font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #eee;
+}
+
+/* Links */
+.link {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.link a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
 }
 

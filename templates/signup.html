@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Talkk Signup</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Talkk - Sign Up</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="purple-bg">
+<body>
 
-<div class="card">
+<div class="auth-card">
     <h2>Sign Up</h2>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <p class="error">{{ messages[0] }}</p>
-      {% endif %}
-    {% endwith %}
-
     <form method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button>Register</button>
+        <div class="input-box">
+            <input type="email" name="email" placeholder="Email address" required>
+            <span>📧</span>
+        </div>
+
+        <div class="input-box">
+            <input type="text" name="name" placeholder="Full name" required>
+            <span>👤</span>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder="New password" required>
+            <span>🔒</span>
+        </div>
+
+        <button class="btn">Create Account</button>
     </form>
 
-    <a href="/login">Already have an account?</a>
+    <div class="link">
+        Already have an account? <a href="/login">Login</a>
+    </div>
 </div>
 
 </body>
 </html>
+
