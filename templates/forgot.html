@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Forgot Password</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Talkk - Forgot Password</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="purple-bg">
+<body>
 
-<div class="card">
+<div class="auth-card">
     <h2>Forgot Password</h2>
-    <p>Contact: <b>ashwinor48@gmail.com</b></p>
-    <a href="/login">Back to Login</a>
+
+    <p style="font-size:14px;opacity:0.9;">
+        If you forgot your password, please contact:
+    </p>
+
+    <p style="font-size:16px;font-weight:bold;">
+        ashwinor48@gmail.com
+    </p>
+
+    <div class="link" style="margin-top:20px;">
+        <a href="/login">Back to Login</a>
+    </div>
 </div>
 
 </body>
