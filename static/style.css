@@ -2,29 +2,10 @@ body {
     margin: 0;
     font-family: "Segoe UI", sans-serif;
     min-height: 100vh;
-    background: linear-gradient(to top, #2b1055, #5f2c82);
-    background-attachment: fixed;
+    background: url("/static/bg.jpg") center/cover no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/* forest + stars overlay */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url("https://i.ibb.co/7vN6y0q/forest.png") center/cover no-repeat;
-    opacity: 0.2;
-    z-index: -2;
-}
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url("https://i.ibb.co/9p7x3sY/stars.png") repeat;
-    opacity: 0.3;
-    z-index: -1;
 }
 
 /* Glass card */
@@ -51,7 +32,7 @@ body::after {
 }
 
 .input-box input {
-    width: 100%;
+    width: calc(100% - 20px);
     padding: 14px 40px 14px 14px;
     border-radius: 30px;
     border: none;
