@@ -3,42 +3,59 @@
 <head>
 <title>Talkk</title>
 <style>
-body {
-    margin: 0;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    flex-direction: column;
+body{
+    margin:0;
+    background:black;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI, sans-serif;
+    color:white;
 }
 
-video {
-    width: 80%;
-    max-width: 600px;
+.container{
+    text-align:center;
 }
 
-button {
-    margin-top: 20px;
-    padding: 14px 40px;
-    font-size: 18px;
-    border-radius: 30px;
-    border: none;
-    background: #8f00ff;
-    color: white;
-    cursor: pointer;
+h1{
+    margin-bottom:15px;
+    font-weight:500;
+    letter-spacing:1px;
+}
+
+video{
+    width:320px;
+    max-width:90%;
+    border-radius:15px;
+    box-shadow:0 0 30px rgba(255,255,255,0.2);
+}
+
+button{
+    margin-top:20px;
+    padding:14px 40px;
+    border-radius:30px;
+    border:none;
+    background:white;
+    color:black;
+    font-size:16px;
+    cursor:pointer;
 }
 </style>
 </head>
+
 <body>
 
-<video autoplay loop muted>
-  <source src="/static/intro.mp4" type="video/mp4">
-</video>
+<div class="container">
+    <h1>Welcome to Talkk</h1>
 
-<a href="/login">
-    <button>START</button>
-</a>
+    <video autoplay muted playsinline preload="auto">
+        <source src="/static/intro.mp4" type="video/mp4">
+    </video>
+
+    <br>
+    <button onclick="window.location.href='/login'">Start</button>
+</div>
 
 </body>
 </html>
