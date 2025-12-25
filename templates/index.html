@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Talkk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="intro-bg">
+
+<div class="video-container">
+    <video autoplay loop muted>
+        <source src="/static/intro.mp4" type="video/mp4">
+    </video>
+
+    <a href="/login">
+        <button class="start-btn">START</button>
+    </a>
+</div>
+
+</body>
+</html>
+
