@@ -16,8 +16,8 @@
         </div>
 
         <div class="input-box">
-            <input type="password" name="password" placeholder="Password" required>
-            <span>🔒</span>
+            <input type="password" id="loginPass" name="password" placeholder="Password" required>
+            <span onclick="toggleLogin()">👁</span>
         </div>
 
         <button class="btn">Login</button>
@@ -31,6 +31,13 @@
         Don’t have an account? <a href="/signup">Sign up</a>
     </div>
 </div>
+
+<script>
+function toggleLogin(){
+    const p = document.getElementById("loginPass");
+    p.type = p.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>
