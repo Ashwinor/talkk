@@ -8,15 +8,16 @@ body {
     align-items: center;
 }
 
-/* Glass card */
+/* ========== GLASS AUTH CARDS ========== */
+
 .auth-card {
     width: 360px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(18px);
     border-radius: 20px;
     padding: 40px 30px;
     color: white;
-    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
     text-align: center;
 }
 
@@ -78,4 +79,59 @@ body {
     color: white;
     text-decoration: none;
     font-weight: bold;
+}
+
+/* ========== ADMIN PANEL ========== */
+
+.admin-body {
+    background: url("/static/admin_bg.jpg") center/cover no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-card {
+    width: 380px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(18px);
+    border-radius: 25px;
+    padding: 40px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+.admin-card h2 {
+    margin-bottom: 25px;
+}
+
+.status {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.toggle-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.on {
+    background: #00ff9c;
+    color: black;
+}
+
+.off {
+    background: #ff3b3b;
+    color: white;
+}
+
+/* ================= FORCE ADMIN BACKGROUND ================= */
+body.admin-body {
+    background: url("/static/admin_bg.jpg") center/cover no-repeat !important;
 }
