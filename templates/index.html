@@ -16,12 +16,17 @@ body{
 
 .container{
     text-align:center;
+    opacity:0;
+    transition:opacity 0.8s ease;
+}
+
+.loader{
+    position:absolute;
+    color:#888;
 }
 
 h1{
     margin-bottom:15px;
-    font-weight:500;
-    letter-spacing:1px;
 }
 
 video{
@@ -46,10 +51,12 @@ button{
 
 <body>
 
-<div class="container">
+<div class="loader" id="loader">Loading Talkk…</div>
+
+<div class="container" id="app">
     <h1>Welcome to Talkk</h1>
 
-    <video autoplay muted playsinline preload="auto">
+    <video id="vid" muted playsinline preload="auto">
         <source src="/static/intro.mp4" type="video/mp4">
     </video>
 
@@ -57,5 +64,18 @@ button{
     <button onclick="window.location.href='/login'">Start</button>
 </div>
 
+<script>
+const video = document.getElementById("vid");
+const loader = document.getElementById("loader");
+const app = document.getElementById("app");
+
+video.addEventListener("canplay", ()=>{
+    loader.style.display = "none";
+    app.style.opacity = 1;
+    video.play();
+});
+</script>
+
 </body>
 </html>
+
