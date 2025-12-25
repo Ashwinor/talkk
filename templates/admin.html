@@ -1,40 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Login</title>
-<style>
-body{
-    background:black;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    font-family:Arial;
-}
-.box{
-    background:#111;
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-}
-input{
-    padding:10px;
-    width:100%;
-    margin:10px 0;
-}
-button{
-    padding:10px 30px;
-}
-</style>
+<title>Talkk Admin Login</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-<div class="box">
-<h2>Admin Login</h2>
-<form method="POST">
-<input type="password" name="password" placeholder="Admin Password" required>
-<button>Login</button>
-</form>
+
+<body class="admin-body">
+
+<div class="admin-card">
+    <h2>Admin Login</h2>
+
+    <form method="POST">
+        <div class="input-box">
+            <input type="password" name="password" placeholder="Admin Password" required>
+            <span>🔐</span>
+        </div>
+
+        <button class="toggle-btn on">Login</button>
+    </form>
 </div>
+
 </body>
 </html>
+

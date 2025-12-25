@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Panel</title>
-<style>
-body{
-    background:black;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    font-family:Arial;
-}
-.box{
-    background:#111;
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-}
-a{
-    display:block;
-    margin:10px;
-    color:#00f2fe;
-    text-decoration:none;
-}
-</style>
+<title>Talkk Admin Control</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-<div class="box">
-<h2>Talkk Control Panel</h2>
-<p>Status: {{ "ON" if not status else "OFF" }}</p>
-<a href="/admin-on">Turn ON</a>
-<a href="/admin-off">Turn OFF</a>
+
+<body class="admin-body">
+
+<div class="admin-card">
+    <h2>Talkk Control Panel</h2>
+
+    <div class="status">
+        Server Status:
+        {% if maintenance %}
+            <span style="color:#ff4c4c;">OFF</span>
+        {% else %}
+            <span style="color:#00ff9c;">ON</span>
+        {% endif %}
+    </div>
+
+    {% if maintenance %}
+        <form method="POST" action="/admin2002on">
+            <button class="toggle-btn on">Turn Server ON</button>
+        </form>
+    {% else %}
+        <form method="POST" action="/admin2002off">
+            <button class="toggle-btn off">Turn Server OFF</button>
+        </form>
+    {% endif %}
 </div>
+
 </body>
 </html>
+
