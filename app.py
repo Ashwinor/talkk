@@ -6,8 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = "talkk_secret"
 
-# ===== MAINTENANCE SETTINGS =====
-MAINTENANCE = True
+# ===== MAINTENANCE MODE =====
+MAINTENANCE = True   # Default is ON
 ADMIN_KEY = "admin2002"
 
 # ===== DATABASE =====
@@ -26,11 +26,21 @@ def intro():
         return render_template("maintenance.html")
     return render_template("index.html")
 
-@app.route("/admin2002")
-def admin_unlock():
+# ----- MAINTENANCE TOGGLE -----
+
+@app.route("/admin2002/on")
+def site_on():
     global MAINTENANCE
     MAINTENANCE = False
-    return "Talkk is now LIVE! You can close this page."
+    return "Talkk is now LIVE"
+
+@app.route("/admin2002/off")
+def site_off():
+    global MAINTENANCE
+    MAINTENANCE = True
+    return "Talkk is now under maintenance"
+
+# ----- AUTH SYSTEM -----
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
