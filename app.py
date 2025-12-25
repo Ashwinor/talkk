@@ -6,6 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = "talkk_secret"
 
+# ===== MAINTENANCE SETTINGS =====
+MAINTENANCE = True
+ADMIN_KEY = "admin2002"
+
+# ===== DATABASE =====
 FILE = "talkk_users.xlsx"
 
 # Create Excel if not exists
@@ -13,12 +18,25 @@ if not os.path.exists(FILE):
     df = pd.DataFrame(columns=["Username", "Email", "Password"])
     df.to_excel(FILE, index=False)
 
+# ===== ROUTES =====
+
 @app.route("/")
 def intro():
+    if MAINTENANCE:
+        return render_template("maintenance.html")
     return render_template("index.html")
+
+@app.route("/admin2002")
+def admin_unlock():
+    global MAINTENANCE
+    MAINTENANCE = False
+    return "Talkk is now LIVE! You can close this page."
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if MAINTENANCE:
+        return render_template("maintenance.html")
+
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -36,6 +54,9 @@ def login():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if MAINTENANCE:
+        return render_template("maintenance.html")
+
     if request.method == "POST":
         username = request.form["username"]
         email = request.form["email"]
@@ -58,12 +79,16 @@ def signup():
 
 @app.route("/forgot")
 def forgot():
+    if MAINTENANCE:
+        return render_template("maintenance.html")
     return render_template("forgot.html")
 
 @app.route("/dashboard")
 def dashboard():
+    if MAINTENANCE:
+        return render_template("maintenance.html")
     return render_template("dashboard.html")
 
+# ===== RUN =====
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
