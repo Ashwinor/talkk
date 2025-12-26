@@ -6,10 +6,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = "talkk_secret"
 
+# ===== ADMIN =====
 ADMIN_PASSWORD = "admin2002"
-
-# GLOBAL MAINTENANCE FLAG (Render-safe)
-maintenance = True
+maintenance = False   # Start online
 
 # ===== DATABASE =====
 FILE = "talkk_users.xlsx"
@@ -30,7 +29,7 @@ def splash():
         return render_template("maintenance.html")
     return render_template("splash.html")
 
-# -------- HOME UI --------
+# ===== HOME UI =====
 
 @app.route("/home")
 def home():
@@ -40,9 +39,12 @@ def home():
 
 @app.route("/home/<page>")
 def home_pages(page):
+    allowed = ["video", "chat", "profile", "settings"]
+    if page not in allowed:
+        return redirect("/home")
     return render_template(f"home/{page}.html")
 
-# -------- ADMIN --------
+# ===== ADMIN =====
 
 @app.route("/admin", methods=["GET","POST"])
 def admin():
@@ -63,17 +65,17 @@ def admin_panel():
 def admin_on():
     global maintenance
     if session.get("admin"):
-        maintenance=False
+        maintenance = False
     return redirect("/admin_panel")
 
 @app.route("/admin2002off", methods=["POST"])
 def admin_off():
     global maintenance
     if session.get("admin"):
-        maintenance=True
+        maintenance = True
     return redirect("/admin_panel")
 
-# -------- AUTH --------
+# ===== AUTH =====
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -81,7 +83,7 @@ def login():
         return render_template("maintenance.html")
 
     if request.method=="POST":
-        df=pd.read_excel(FILE)
+        df = pd.read_excel(FILE)
         for _,row in df.iterrows():
             if row["Email"]==request.form["email"] and check_password_hash(row["Password"],request.form["password"]):
                 return redirect("/home")
@@ -94,9 +96,9 @@ def signup():
         return render_template("maintenance.html")
 
     if request.method=="POST":
-        df=pd.read_excel(FILE)
+        df = pd.read_excel(FILE)
         if request.form["email"] in df["Email"].values:
-            flash("Email exists")
+            flash("Email already exists")
             return redirect("/signup")
 
         df.loc[len(df)] = [
@@ -123,4 +125,4 @@ def dashboard():
 
 # ===== RUN =====
 if __name__=="__main__":
-    app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
