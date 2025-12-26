@@ -15,7 +15,8 @@
         </div>
 
         <div class="input-box">
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="password" id="loginPass" placeholder="Password" required>
+            <span onclick="toggleLogin()">👁️</span>
         </div>
 
         <button class="btn">Login</button>
@@ -27,8 +28,16 @@
     </div>
 </div>
 
+<script>
+function toggleLogin(){
+    let p = document.getElementById("loginPass");
+    p.type = p.type === "password" ? "text" : "password";
+}
+</script>
+
 </body>
 </html>
+
 
 
 
