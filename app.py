@@ -8,7 +8,7 @@ app.secret_key = "talkk_secret"
 
 # ===== ADMIN =====
 ADMIN_PASSWORD = "admin2002"
-maintenance = False   # start online
+maintenance = False
 
 # ===== DATABASE =====
 FILE = "talkk_users.xlsx"
@@ -39,7 +39,7 @@ def home():
 
 @app.route("/home/<page>")
 def home_pages(page):
-    allowed = ["video", "chat", "profile", "settings"]
+    allowed = ["video","chat","profile","settings"]
     if page not in allowed:
         return redirect("/home")
     return render_template(f"home/{page}.html")
@@ -83,11 +83,17 @@ def login():
         return render_template("maintenance.html")
 
     if request.method=="POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
         df = pd.read_excel(FILE)
         for _,row in df.iterrows():
-            if row["Email"]==request.form["email"] and check_password_hash(row["Password"],request.form["password"]):
+            if row["Email"]==email and check_password_hash(row["Password"], password):
+                session["user"] = row["Username"]
                 return redirect("/home")
+
         flash("Invalid credentials")
+
     return render_template("login.html")
 
 @app.route("/signup", methods=["GET","POST"])
@@ -133,4 +139,5 @@ def logout():
 # ===== RUN =====
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
+
 
