@@ -8,44 +8,36 @@ app.secret_key = "talkk_secret"
 
 # ===== ADMIN =====
 ADMIN_PASSWORD = "admin2002"
-maintenance = False
+MAINT_FILE = "maintenance.txt"
+
+def get_maintenance():
+    if not os.path.exists(MAINT_FILE):
+        with open(MAINT_FILE, "w") as f:
+            f.write("OFF")
+        return False
+    with open(MAINT_FILE, "r") as f:
+        return f.read().strip() == "ON"
+
+def set_maintenance(state):
+    with open(MAINT_FILE, "w") as f:
+        f.write("ON" if state else "OFF")
 
 # ===== DATABASE =====
 FILE = "talkk_users.xlsx"
+
 if not os.path.exists(FILE):
-    pd.DataFrame(columns=["Username","Email","Password"]).to_excel(FILE,index=False)
+    df = pd.DataFrame(columns=["Username","Email","Password"])
+    df.to_excel(FILE, index=False)
 
 # ===== ROUTES =====
 
 @app.route("/")
 def intro():
-    if maintenance and not session.get("admin"):
+    if get_maintenance() and not session.get("admin"):
         return render_template("maintenance.html")
     return render_template("index.html")
 
-@app.route("/splash")
-def splash():
-    if maintenance and not session.get("admin"):
-        return render_template("maintenance.html")
-    return render_template("splash.html")
-
-# ===== HOME =====
-
-@app.route("/home")
-def home():
-    if maintenance and not session.get("admin"):
-        return render_template("maintenance.html")
-    return render_template("home/home.html")
-
-@app.route("/home/<page>")
-def home_pages(page):
-    allowed = ["video","chat","profile","settings"]
-    if page not in allowed:
-        return redirect("/home")
-    return render_template(f"home/{page}.html")
-
-# ===== ADMIN =====
-
+# ---------- ADMIN ----------
 @app.route("/admin", methods=["GET","POST"])
 def admin():
     if request.method=="POST":
@@ -59,82 +51,79 @@ def admin():
 def admin_panel():
     if not session.get("admin"):
         return redirect("/admin")
-    return render_template("admin_panel.html", maintenance=maintenance)
+    return render_template("admin_panel.html", maintenance=get_maintenance())
 
 @app.route("/admin2002on", methods=["POST"])
 def admin_on():
-    global maintenance
     if session.get("admin"):
-        maintenance=False
+        set_maintenance(False)
     return redirect("/admin_panel")
 
 @app.route("/admin2002off", methods=["POST"])
 def admin_off():
-    global maintenance
     if session.get("admin"):
-        maintenance=True
+        set_maintenance(True)
     return redirect("/admin_panel")
 
-# ===== AUTH =====
+# ---------- AUTH ----------
 
-@app.route("/login", methods=["GET","POST"])
-def login():
-    if maintenance and not session.get("admin"):
+@app.route("/signup", methods=["GET","POST"])
+def signup():
+    if get_maintenance() and not session.get("admin"):
         return render_template("maintenance.html")
 
     if request.method=="POST":
-        email = request.form["email"]
-        password = request.form["password"]
+        username=request.form["username"]
+        email=request.form["email"]
+        password=request.form["password"]
 
-        df = pd.read_excel(FILE)
+        df=pd.read_excel(FILE)
+        if email in df["Email"].values:
+            flash("Email already exists")
+            return redirect("/signup")
+
+        hashed=generate_password_hash(password)
+        df.loc[len(df)]=[username,email,hashed]
+        df.to_excel(FILE,index=False)
+
+        return redirect("/login")
+
+    return render_template("signup.html")
+
+@app.route("/login", methods=["GET","POST"])
+def login():
+    if get_maintenance() and not session.get("admin"):
+        return render_template("maintenance.html")
+
+    if request.method=="POST":
+        email=request.form["email"]
+        password=request.form["password"]
+
+        df=pd.read_excel(FILE)
         for _,row in df.iterrows():
-            if row["Email"]==email and check_password_hash(row["Password"], password):
-                session["user"] = row["Username"]
+            if row["Email"]==email and check_password_hash(row["Password"],password):
+                session["user"]=row["Username"]
                 return redirect("/home")
 
         flash("Invalid credentials")
 
     return render_template("login.html")
 
-@app.route("/signup", methods=["GET","POST"])
-def signup():
-    if maintenance and not session.get("admin"):
-        return render_template("maintenance.html")
-
-    if request.method=="POST":
-        df = pd.read_excel(FILE)
-        if request.form["email"] in df["Email"].values:
-            flash("Email already exists")
-            return redirect("/signup")
-
-        df.loc[len(df)] = [
-            request.form["username"],
-            request.form["email"],
-            generate_password_hash(request.form["password"])
-        ]
-        df.to_excel(FILE,index=False)
-        return redirect("/login")
-
-    return render_template("signup.html")
-
-@app.route("/forgot")
-def forgot():
-    if maintenance and not session.get("admin"):
-        return render_template("maintenance.html")
-    return render_template("forgot.html")
-
-@app.route("/dashboard")
-def dashboard():
-    if maintenance and not session.get("admin"):
-        return render_template("maintenance.html")
-    return render_template("dashboard.html")
-
-# ===== LOGOUT =====
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
+
+@app.route("/forgot")
+def forgot():
+    return render_template("forgot.html")
+
+# ---------- HOME ----------
+@app.route("/home")
+def home():
+    if not session.get("user"):
+        return redirect("/login")
+    return render_template("home/home.html", user=session["user"])
 
 # ===== RUN =====
 if __name__=="__main__":

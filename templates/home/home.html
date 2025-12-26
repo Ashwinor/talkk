@@ -1,74 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Talkk</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
 
-<body id="body">
+<body>
 
 <div class="top-bar">
-  <div class="username">👤 {{ session.get("user") }}</div>
-  <input class="search" placeholder="Search users...">
-  <div class="notify" onclick="openNotify()">🔔</div>
-</div>
-
-<div class="main-area" id="main">
-  <h2>Welcome to Talkk</h2>
-  <p>Select an option below</p>
-</div>
-
-<div class="bottom-bar">
-  <div class="nav-btn" onclick="show('Video','Not available now')">📹</div>
-  <div class="nav-btn" onclick="show('Chat','Not available now')">💬</div>
-  <div class="nav-btn" onclick="show('Profile','Coming soon')">👤</div>
-  <div class="nav-btn" onclick="openSettings()">⚙</div>
-</div>
-
-<div class="settings" id="settings">
-  <h3>Settings</h3>
-  <button onclick="toggleMode()">🌙 Dark / Light</button>
-  <a href="/logout"><button class="logout">Logout</button></a>
-  <button onclick="closeSettings()">Close</button>
+  <div>{{ user }}</div>
+  <div id="bell">🔔</div>
 </div>
 
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
-  <p>No messages yet</p>
-  <button onclick="closeNotify()">Close</button>
+  <p>No notifications yet</p>
+</div>
+
+<div class="settings-panel" id="settings">
+  <div class="toggle" onclick="toggleMode()">Toggle Dark Mode</div>
+  <div class="toggle" onclick="window.location='/logout'">Logout</div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-btn">📹</div>
+  <div class="nav-btn">💬</div>
+  <div class="nav-btn">👤</div>
+  <div class="nav-btn" onclick="toggleSettings()">⚙</div>
 </div>
 
 <script>
-function show(t,m){
-  document.getElementById("main").style.opacity="0";
-  setTimeout(()=>{
-    document.getElementById("main").innerHTML="<h2>"+t+"</h2><p>"+m+"</p>";
-    document.getElementById("main").style.opacity="1";
-  },300);
+document.getElementById("bell").onclick = ()=>{
+  document.getElementById("notify").classList.toggle("show")
 }
 
-function openSettings(){
-  document.getElementById("settings").classList.add("show");
-}
-function closeSettings(){
-  document.getElementById("settings").classList.remove("show");
+function toggleSettings(){
+  document.getElementById("settings").classList.toggle("show")
 }
 
 function toggleMode(){
-  document.body.classList.toggle("light");
-}
-
-function openNotify(){
-  document.getElementById("notify").classList.add("show");
-}
-function closeNotify(){
-  document.getElementById("notify").classList.remove("show");
+  document.body.classList.toggle("light")
 }
 </script>
 
 </body>
 </html>
+
 
 
 

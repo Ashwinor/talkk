@@ -1,134 +1,103 @@
-body{
-  margin:0;
-  background:#0b0f1a;
-  color:white;
-  font-family:Segoe UI, sans-serif;
-  overflow:hidden;
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: white;
+  font-family: "Segoe UI", sans-serif;
 }
 
-body.light{
-  background:#f1f1f1;
-  color:black;
-}
-
-.top-bar{
-  height:60px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 15px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  box-shadow:0 0 20px rgba(0,0,0,0.4);
-}
-
-.search{
-  width:50%;
-  padding:10px;
-  border-radius:30px;
-  border:none;
-  background:rgba(255,255,255,0.2);
-  color:white;
-  outline:none;
-}
-
-.main-area{
-  height:calc(100vh - 130px);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  transition:0.5s;
-}
-
-/* ===== Bottom Bar ===== */
-
-.bottom-bar{
-  height:80px;
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter: blur(15px);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-}
-
-/* Liquid buttons */
-.nav-btn{
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.2);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:24px;
-  cursor:pointer;
-  transition:0.4s ease;
-  position:relative;
-  overflow:hidden;
-}
-
-.nav-btn::after{
-  content:"";
-  position:absolute;
-  width:120%;
-  height:120%;
-  background:radial-gradient(circle,#7f5cff,transparent);
-  opacity:0;
-  transition:0.5s;
-}
-
-.nav-btn:hover::after{
-  opacity:1;
-}
-
-.nav-btn:hover{
-  transform:translateY(-10px) scale(1.1);
-  box-shadow:0 0 25px #7f5cff;
-}
-
-/* ===== Settings ===== */
-
-.settings{
-  position:fixed;
-  bottom:-300px;
-  left:50%;
-  transform:translateX(-50%);
-  width:300px;
-  background:rgba(20,20,30,0.9);
+/* Top Bar */
+.top-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
   backdrop-filter: blur(20px);
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  transition:0.6s cubic-bezier(.19,1,.22,1);
-  box-shadow:0 0 50px rgba(127,92,255,0.6);
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
 }
 
-.settings.show{
-  bottom:100px;
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  height: 65px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(20px);
+  border-radius: 40px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.settings button{
-  width:100%;
-  margin:10px 0;
-  padding:14px;
-  border:none;
-  border-radius:20px;
-  background:rgba(255,255,255,0.2);
-  color:white;
-  font-size:15px;
-  cursor:pointer;
-  transition:0.3s;
+/* Nav buttons */
+.nav-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+  cursor: pointer;
 }
 
-.settings button:hover{
-  background:#7f5cff;
+.nav-btn:hover {
+  background: rgba(255,255,255,0.35);
+  transform: scale(1.1);
 }
 
-.logout{
-  background:red;
+/* Notifications panel */
+.notify-panel {
+  position: fixed;
+  top: 60px;
+  right: -100%;
+  width: 280px;
+  height: calc(100% - 60px);
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(20px);
+  transition: 0.5s;
+  padding: 20px;
 }
+
+.notify-panel.show {
+  right: 0;
+}
+
+/* Settings panel */
+.settings-panel {
+  position: fixed;
+  bottom: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 25px 25px 0 0;
+  padding: 25px;
+  transition: 0.4s;
+}
+
+.settings-panel.show {
+  bottom: 0;
+}
+
+.toggle {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  text-align: center;
+  cursor: pointer;
+}
+
+
