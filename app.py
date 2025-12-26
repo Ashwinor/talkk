@@ -13,8 +13,8 @@ MAINT_FILE = "maintenance.txt"
 def get_maintenance():
     if not os.path.exists(MAINT_FILE):
         with open(MAINT_FILE, "w") as f:
-            f.write("OFF")
-        return False
+            f.write("ON")
+        return True
     with open(MAINT_FILE, "r") as f:
         return f.read().strip() == "ON"
 
@@ -29,12 +29,19 @@ if not os.path.exists(FILE):
     df = pd.DataFrame(columns=["Username","Email","Password"])
     df.to_excel(FILE, index=False)
 
+# 🔒 GLOBAL MAINTENANCE BLOCKER
+@app.before_request
+def block_when_maintenance():
+    if get_maintenance():
+        allowed = ["/admin", "/admin_panel", "/admin2002on", "/admin2002off", "/static"]
+        if not session.get("admin"):
+            if not any(request.path.startswith(a) for a in allowed):
+                return render_template("maintenance.html")
+
 # ===== ROUTES =====
 
 @app.route("/")
 def intro():
-    if get_maintenance() and not session.get("admin"):
-        return render_template("maintenance.html")
     return render_template("index.html")
 
 # ---------- SPLASH ----------
@@ -73,9 +80,6 @@ def admin_off():
 # ---------- SIGNUP ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
-    if get_maintenance() and not session.get("admin"):
-        return render_template("maintenance.html")
-
     if request.method == "POST":
         username = request.form["username"]
         email = request.form["email"]
@@ -97,9 +101,6 @@ def signup():
 # ---------- LOGIN ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if get_maintenance() and not session.get("admin"):
-        return render_template("maintenance.html")
-
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
