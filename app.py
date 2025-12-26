@@ -10,7 +10,7 @@ MAINT_FILE = "maintenance.txt"
 DB = "users.db"
 
 # =======================
-#  DATABASE SETUP
+#  DATABASE
 # =======================
 def db():
     return sqlite3.connect(DB)
@@ -41,10 +41,9 @@ def set_maintenance(state):
 
 @app.before_request
 def maintenance_block():
-    if get_maintenance():
-        if not session.get("admin"):
-            if not request.path.startswith(("/admin", "/static")):
-                return render_template("maintenance.html")
+    if get_maintenance() and not session.get("admin"):
+        if not request.path.startswith(("/admin", "/static")):
+            return render_template("maintenance.html")
 
 # =======================
 #  ROUTES
@@ -52,6 +51,8 @@ def maintenance_block():
 
 @app.route("/")
 def intro():
+    if get_maintenance() and not session.get("admin"):
+        return render_template("maintenance.html")
     return render_template("index.html")
 
 @app.route("/splash")
@@ -89,6 +90,9 @@ def admin_off():
 # ---------- SIGNUP ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
+    if get_maintenance() and not session.get("admin"):
+        return render_template("maintenance.html")
+
     if request.method == "POST":
         u = request.form["username"]
         e = request.form["email"]
@@ -109,6 +113,9 @@ def signup():
 # ---------- LOGIN ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
+    if get_maintenance() and not session.get("admin"):
+        return render_template("maintenance.html")
+
     if request.method == "POST":
         e = request.form["email"]
         p = request.form["password"]
@@ -134,6 +141,11 @@ def logout():
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     return r
+
+# ---------- FORGOT ----------
+@app.route("/forgot")
+def forgot():
+    return render_template("forgot.html")
 
 # ---------- HOME ----------
 @app.route("/home")
