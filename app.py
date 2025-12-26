@@ -8,7 +8,19 @@ app.secret_key = "talkk_secret"
 
 # ===== ADMIN =====
 ADMIN_PASSWORD = "admin2002"
-maintenance = True
+MAINT_FILE = "maintenance.txt"
+
+def get_maintenance():
+    if not os.path.exists(MAINT_FILE):
+        with open(MAINT_FILE, "w") as f:
+            f.write("ON")
+        return True
+    with open(MAINT_FILE, "r") as f:
+        return f.read().strip() == "ON"
+
+def set_maintenance(state):
+    with open(MAINT_FILE, "w") as f:
+        f.write("ON" if state else "OFF")
 
 # ===== DATABASE =====
 FILE = "talkk_users.xlsx"
@@ -21,7 +33,7 @@ if not os.path.exists(FILE):
 
 @app.route("/")
 def intro():
-    if maintenance:
+    if get_maintenance():
         return render_template("maintenance.html")
     return render_template("index.html")
 
@@ -30,39 +42,35 @@ def intro():
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "POST":
-        password = request.form["password"]
-        if password == ADMIN_PASSWORD:
+        if request.form["password"] == ADMIN_PASSWORD:
             session["admin"] = True
             return redirect("/admin_panel")
-        else:
-            flash("Wrong password")
+        flash("Wrong password")
     return render_template("admin.html")
 
 @app.route("/admin_panel")
 def admin_panel():
     if not session.get("admin"):
         return redirect("/admin")
-    return render_template("admin_panel.html", maintenance=maintenance)
+    return render_template("admin_panel.html", maintenance=get_maintenance())
 
 @app.route("/admin2002on", methods=["POST"])
 def admin_on():
-    global maintenance
     if session.get("admin"):
-        maintenance = False
+        set_maintenance(False)
     return redirect("/admin_panel")
 
 @app.route("/admin2002off", methods=["POST"])
 def admin_off():
-    global maintenance
     if session.get("admin"):
-        maintenance = True
+        set_maintenance(True)
     return redirect("/admin_panel")
 
 # -------- AUTH --------
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if maintenance:
+    if get_maintenance():
         return render_template("maintenance.html")
 
     if request.method == "POST":
@@ -79,7 +87,7 @@ def login():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    if maintenance:
+    if get_maintenance():
         return render_template("maintenance.html")
 
     if request.method == "POST":
@@ -102,16 +110,17 @@ def signup():
 
 @app.route("/forgot")
 def forgot():
-    if maintenance:
+    if get_maintenance():
         return render_template("maintenance.html")
     return render_template("forgot.html")
 
 @app.route("/dashboard")
 def dashboard():
-    if maintenance:
+    if get_maintenance():
         return render_template("maintenance.html")
     return render_template("dashboard.html")
 
 # ===== RUN =====
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
