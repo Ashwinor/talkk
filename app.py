@@ -37,6 +37,13 @@ def intro():
         return render_template("maintenance.html")
     return render_template("index.html")
 
+# NEW splash page (video page)
+@app.route("/splash")
+def splash():
+    if get_maintenance():
+        return render_template("maintenance.html")
+    return render_template("splash.html")
+
 # -------- ADMIN --------
 
 @app.route("/admin", methods=["GET", "POST"])
@@ -123,4 +130,3 @@ def dashboard():
 # ===== RUN =====
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
