@@ -9,27 +9,47 @@ ADMIN_PASSWORD = "admin2002"
 MAINT_FILE = "maintenance.txt"
 DB = "users.db"
 
-# ---------- MAINTENANCE ----------
-def get_maintenance():
-    if not os.path.exists(MAINT_FILE):
-        open(MAINT_FILE,"w").write("OFF")
-    return open(MAINT_FILE).read().strip()=="ON"
-
-def set_maintenance(state):
-    open(MAINT_FILE,"w").write("ON" if state else "OFF")
-
-@app.before_request
-def block():
-    if get_maintenance():
-        if not session.get("admin"):
-            if not request.path.startswith(("/admin","/static")):
-                return render_template("maintenance.html")
-
-# ---------- DATABASE ----------
+# =======================
+#  DATABASE SETUP
+# =======================
 def db():
     return sqlite3.connect(DB)
 
-# ---------- ROUTES ----------
+if not os.path.exists(DB):
+    conn = db()
+    conn.execute("""
+    CREATE TABLE users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        email TEXT UNIQUE,
+        password TEXT
+    )
+    """)
+    conn.commit()
+    conn.close()
+
+# =======================
+#  MAINTENANCE MODE
+# =======================
+def get_maintenance():
+    if not os.path.exists(MAINT_FILE):
+        open(MAINT_FILE, "w").write("OFF")
+    return open(MAINT_FILE).read().strip() == "ON"
+
+def set_maintenance(state):
+    open(MAINT_FILE, "w").write("ON" if state else "OFF")
+
+@app.before_request
+def maintenance_block():
+    if get_maintenance():
+        if not session.get("admin"):
+            if not request.path.startswith(("/admin", "/static")):
+                return render_template("maintenance.html")
+
+# =======================
+#  ROUTES
+# =======================
+
 @app.route("/")
 def intro():
     return render_template("index.html")
@@ -38,12 +58,12 @@ def intro():
 def splash():
     return render_template("splash.html")
 
-# ----- ADMIN -----
+# ---------- ADMIN ----------
 @app.route("/admin", methods=["GET","POST"])
 def admin():
-    if request.method=="POST":
-        if request.form["password"]==ADMIN_PASSWORD:
-            session["admin"]=True
+    if request.method == "POST":
+        if request.form["password"] == ADMIN_PASSWORD:
+            session["admin"] = True
             return redirect("/admin_panel")
         flash("Wrong password")
     return render_template("admin.html")
@@ -56,69 +76,76 @@ def admin_panel():
 
 @app.route("/admin2002on", methods=["POST"])
 def admin_on():
-    if session.get("admin"): set_maintenance(False)
+    if session.get("admin"):
+        set_maintenance(False)
     return redirect("/admin_panel")
 
 @app.route("/admin2002off", methods=["POST"])
 def admin_off():
-    if session.get("admin"): set_maintenance(True)
+    if session.get("admin"):
+        set_maintenance(True)
     return redirect("/admin_panel")
 
-# ----- SIGNUP -----
+# ---------- SIGNUP ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
-    if request.method=="POST":
-        u=request.form["username"]
-        e=request.form["email"]
-        p=generate_password_hash(request.form["password"])
+    if request.method == "POST":
+        u = request.form["username"]
+        e = request.form["email"]
+        p = generate_password_hash(request.form["password"])
 
-        conn=db()
+        conn = db()
         try:
             conn.execute("INSERT INTO users(username,email,password) VALUES(?,?,?)",(u,e,p))
             conn.commit()
+            conn.close()
             return redirect("/login")
         except:
+            conn.close()
             flash("Email already exists")
-        conn.close()
 
     return render_template("signup.html")
 
-# ----- LOGIN -----
+# ---------- LOGIN ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if request.method=="POST":
-        e=request.form["email"]
-        p=request.form["password"]
+    if request.method == "POST":
+        e = request.form["email"]
+        p = request.form["password"]
 
-        conn=db()
-        user=conn.execute("SELECT username,password FROM users WHERE email=?",(e,)).fetchone()
+        conn = db()
+        user = conn.execute("SELECT username,password FROM users WHERE email=?",(e,)).fetchone()
         conn.close()
 
-        if user and check_password_hash(user[1],p):
-            session["user"]=user[0]
+        if user and check_password_hash(user[1], p):
+            session["user"] = user[0]
             return redirect("/home")
 
         flash("Invalid login")
 
     return render_template("login.html")
 
-# ----- LOGOUT -----
+# ---------- LOGOUT ----------
 @app.route("/logout")
 def logout():
     session.clear()
-    r=redirect("/login")
-    r.headers["Cache-Control"]="no-cache, no-store, must-revalidate"
+    r = redirect("/login")
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
     return r
 
-# ----- HOME -----
+# ---------- HOME ----------
 @app.route("/home")
 def home():
     if not session.get("user"):
         return redirect("/login")
     return render_template("home/home.html", user=session["user"])
 
-if __name__=="__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
-
+# =======================
+#  RUN
+# =======================
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 
