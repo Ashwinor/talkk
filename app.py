@@ -13,7 +13,7 @@ MAINT_FILE = "maintenance.txt"
 def get_maintenance():
     if not os.path.exists(MAINT_FILE):
         with open(MAINT_FILE, "w") as f:
-            f.write("ON")
+            f.write("ON")   # default = maintenance ON
         return True
     with open(MAINT_FILE, "r") as f:
         return f.read().strip() == "ON"
@@ -29,11 +29,14 @@ if not os.path.exists(FILE):
     df = pd.DataFrame(columns=["Username","Email","Password"])
     df.to_excel(FILE, index=False)
 
-# 🔒 GLOBAL MAINTENANCE BLOCKER
+# ===== GLOBAL MAINTENANCE FIREWALL =====
 @app.before_request
-def block_when_maintenance():
+def maintenance_firewall():
     if get_maintenance():
-        allowed = ["/admin", "/admin_panel", "/admin2002on", "/admin2002off", "/static"]
+        allowed = [
+            "/admin", "/admin_panel", "/admin2002on", "/admin2002off",
+            "/login", "/signup", "/forgot", "/static"
+        ]
         if not session.get("admin"):
             if not any(request.path.startswith(a) for a in allowed):
                 return render_template("maintenance.html")
@@ -86,6 +89,7 @@ def signup():
         password = request.form["password"]
 
         df = pd.read_excel(FILE)
+
         if email in df["Email"].values:
             flash("Email already exists")
             return redirect("/signup")
@@ -106,16 +110,18 @@ def login():
         password = request.form["password"]
 
         df = pd.read_excel(FILE)
+
         for _, row in df.iterrows():
             if row["Email"] == email and check_password_hash(row["Password"], password):
                 session["user"] = row["Username"]
                 return redirect("/home")
 
         flash("Invalid credentials")
+        return redirect("/login")
 
     return render_template("login.html")
 
-# ---------- LOGOUT (SECURE) ----------
+# ---------- LOGOUT ----------
 @app.route("/logout")
 def logout():
     session.clear()
