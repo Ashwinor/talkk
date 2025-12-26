@@ -25,25 +25,42 @@ body{
     margin-bottom:20px;
 }
 
-button{
-    margin-top:20px;
-    padding:14px 40px;
+/* Glass Start Button */
+.glass-btn{
+    padding:14px 45px;
     border-radius:30px;
-    border:none;
-    background:white;
+    border:1px solid rgba(255,255,255,0.4);
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    color:white;
     font-size:16px;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(255,255,255,0.25);
+    transition:0.3s ease;
+}
+
+.glass-btn:hover{
+    background:rgba(255,255,255,0.25);
+}
+
+.glass-btn:active{
+    transform:scale(0.95);
+    box-shadow:0 0 40px rgba(255,255,255,0.8);
 }
 </style>
 </head>
 
 <body>
+
 <div class="box">
     <img src="/static/logo.png" class="logo">
     <h1>Welcome to Talkk</h1>
-    <button onclick="window.location.href='/splash'">Start</button>
+    <button class="glass-btn" onclick="window.location.href='/splash'">Start</button>
 </div>
+
 </body>
 </html>
+
 
 
 
