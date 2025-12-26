@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Talkk</title>
+<link rel="stylesheet" href="/static/home/home.css">
+<script src="https://kit.fontawesome.com/a2d9d5a52d.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="username">👤 {{ session.get("user","User") }}</div>
+
+  <input class="search" placeholder="Search users...">
+
+  <div class="notify" onclick="alert('No notifications found')">
+    🔔
+  </div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+  <h2 id="screen-title">Welcome to Talkk</h2>
+  <p id="screen-text">Select an option below</p>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+
+  <div class="nav-btn" onclick="openTab('video')">
+    📹
+    <span>Video</span>
+  </div>
+
+  <div class="nav-btn" onclick="openTab('chat')">
+    💬
+    <span>Chat</span>
+  </div>
+
+  <div class="nav-btn" onclick="openTab('profile')">
+    👤
+    <span>Profile</span>
+  </div>
+
+  <div class="nav-btn" onclick="openTab('settings')">
+    ⚙
+    <span>Settings</span>
+  </div>
+
+</div>
+
+<script>
+function openTab(tab){
+  if(tab==="video"){
+    show("Video Call","Not available now");
+  }
+  if(tab==="chat"){
+    show("Chat","Not available now");
+  }
+  if(tab==="profile"){
+    show("Profile","Profile page coming soon");
+  }
+  if(tab==="settings"){
+    show("Settings","Logout & Dark mode here");
+  }
+}
+
+function show(title,text){
+  document.getElementById("screen-title").innerText=title;
+  document.getElementById("screen-text").innerText=text;
+}
+</script>
+
+</body>
+</html>
