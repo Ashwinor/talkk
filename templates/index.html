@@ -3,12 +3,13 @@
 <head>
 <title>Talkk</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body,html{
+html,body{
     margin:0;
     height:100%;
-    overflow:hidden;
     background:black;
+    overflow:hidden;
     font-family:Segoe UI, sans-serif;
 }
 
@@ -19,28 +20,26 @@ body,html{
     width:100%;
     height:100%;
     object-fit:cover;
-    z-index:-1;
+    display:none;
 }
 
 .overlay{
-    position:absolute;
+    position:fixed;
     top:0;
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.4);
+    background:black;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     color:white;
-    text-align:center;
+    z-index:5;
 }
 
 h1{
     margin-bottom:20px;
-    font-weight:500;
-    letter-spacing:1px;
 }
 
 button{
@@ -62,21 +61,22 @@ button{
 
 <div class="overlay" id="overlay">
     <h1>Welcome to Talkk</h1>
-    <button id="startBtn">Start</button>
+    <button id="start">Tap to Start</button>
 </div>
 
 <script>
 const video = document.getElementById("video-bg");
-const start = document.getElementById("startBtn");
+const overlay = document.getElementById("overlay");
+const start = document.getElementById("start");
 
-/* Try autoplay */
-video.play().catch(()=>{});
-
-/* iOS fallback: user tap starts video */
-start.addEventListener("click", ()=>{
+start.onclick = () => {
+    overlay.style.display="none";
+    video.style.display="block";
     video.play();
-    window.location.href="/login";
-});
+    setTimeout(()=>{
+        window.location.href="/login";
+    }, 2000);  // show video 2 sec then go to login
+};
 </script>
 
 </body>
