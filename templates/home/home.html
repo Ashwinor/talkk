@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Talkk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talkk Home</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
 
 <body>
 
+<!-- TOP BAR -->
 <div class="top-bar">
-  <div>{{ user }}</div>
-  <div id="bell">🔔</div>
+    <div class="user">{{ user }}</div>
+
+    <input class="search" placeholder="Search users...">
+
+    <div class="bell" id="bell">🔔</div>
 </div>
 
+<!-- NOTIFICATIONS -->
 <div class="notify-panel" id="notify">
-  <h3>Notifications</h3>
-  <p>No notifications yet</p>
+    <h3>Notifications</h3>
+    <p>No notifications yet</p>
 </div>
 
+<!-- SETTINGS -->
 <div class="settings-panel" id="settings">
-  <div class="toggle" onclick="toggleMode()">Toggle Dark Mode</div>
-  <div class="toggle" onclick="window.location='/logout'">Logout</div>
+    <div class="setting-btn" onclick="toggleMode()">🌗 Toggle Dark Mode</div>
+    <div class="setting-btn" onclick="window.location='/logout'">🚪 Logout</div>
 </div>
 
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-btn">📹</div>
-  <div class="nav-btn">💬</div>
-  <div class="nav-btn">👤</div>
-  <div class="nav-btn" onclick="toggleSettings()">⚙</div>
+    <div class="nav-btn" onclick="showAlert('Video not available yet')">📹</div>
+    <div class="nav-btn" onclick="showAlert('Chat not available yet')">💬</div>
+    <div class="nav-btn" onclick="showAlert('Profile not available yet')">👤</div>
+    <div class="nav-btn" onclick="toggleSettings()">⚙</div>
 </div>
 
 <script>
 document.getElementById("bell").onclick = ()=>{
   document.getElementById("notify").classList.toggle("show")
+  document.getElementById("bell").classList.toggle("shake")
 }
 
 function toggleSettings(){
@@ -40,6 +49,10 @@ function toggleSettings(){
 
 function toggleMode(){
   document.body.classList.toggle("light")
+}
+
+function showAlert(msg){
+  alert(msg)
 }
 </script>
 

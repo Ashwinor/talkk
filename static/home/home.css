@@ -1,103 +1,139 @@
-body {
-  margin: 0;
-  background: #0a0a0a;
-  color: white;
-  font-family: "Segoe UI", sans-serif;
+body{
+  margin:0;
+  font-family:Segoe UI, sans-serif;
+  background:#000;
+  color:white;
 }
 
-/* Top Bar */
-.top-bar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 60px;
-  backdrop-filter: blur(20px);
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  z-index: 10;
+body.light{
+  background:#eee;
+  color:black;
 }
 
-/* Bottom Nav */
-.bottom-nav {
-  position: fixed;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 400px;
-  height: 65px;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(20px);
-  border-radius: 40px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+/* TOP BAR */
+.top-bar{
+  position:fixed;
+  top:0;
+  width:100%;
+  height:60px;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(20px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
 }
 
-/* Nav buttons */
-.nav-btn {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s;
-  cursor: pointer;
+body.light .top-bar{
+  background:rgba(0,0,0,0.8);
+  color:white;
 }
 
-.nav-btn:hover {
-  background: rgba(255,255,255,0.35);
-  transform: scale(1.1);
+.search{
+  width:40%;
+  padding:8px 15px;
+  border-radius:20px;
+  border:none;
+  outline:none;
 }
 
-/* Notifications panel */
-.notify-panel {
-  position: fixed;
-  top: 60px;
-  right: -100%;
-  width: 280px;
-  height: calc(100% - 60px);
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(20px);
-  transition: 0.5s;
-  padding: 20px;
+/* BELL */
+.bell{
+  cursor:pointer;
 }
 
-.notify-panel.show {
-  right: 0;
+.shake{
+  animation:shake 0.4s;
+}
+@keyframes shake{
+  0%{transform:rotate(0deg)}
+  25%{transform:rotate(10deg)}
+  50%{transform:rotate(-10deg)}
+  75%{transform:rotate(10deg)}
+  100%{transform:rotate(0deg)}
 }
 
-/* Settings panel */
-.settings-panel {
-  position: fixed;
-  bottom: -300px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 400px;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(20px);
-  border-radius: 25px 25px 0 0;
-  padding: 25px;
-  transition: 0.4s;
+/* NOTIFICATION PANEL */
+.notify-panel{
+  position:fixed;
+  top:60px;
+  right:-300px;
+  width:250px;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
+  padding:20px;
+  transition:0.5s;
+}
+.notify-panel.show{
+  right:0;
 }
 
-.settings-panel.show {
-  bottom: 0;
+/* SETTINGS */
+.settings-panel{
+  position:fixed;
+  bottom:-300px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:350px;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(20px);
+  border-radius:20px 20px 0 0;
+  padding:25px;
+  transition:0.4s;
 }
 
-.toggle {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.1);
-  text-align: center;
-  cursor: pointer;
+.settings-panel.show{
+  bottom:0;
+}
+
+.setting-btn{
+  background:rgba(255,255,255,0.15);
+  padding:15px;
+  border-radius:20px;
+  margin-bottom:15px;
+  text-align:center;
+  cursor:pointer;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:400px;
+  height:65px;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(20px);
+  border-radius:40px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+
+body.light .bottom-nav{
+  background:rgba(0,0,0,0.9);
+}
+
+/* BUTTONS */
+.nav-btn{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.nav-btn:hover{
+  background:rgba(255,255,255,0.5);
+  transform:scale(1.15);
 }
 
 
