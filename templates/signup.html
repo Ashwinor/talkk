@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Talkk - Sign Up</title>
+<title>Sign Up</title>
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -11,34 +11,24 @@
 
     <form method="POST">
         <div class="input-box">
-            <input type="email" name="email" placeholder="Email address" required>
-            <span>📧</span>
+            <input type="text" name="username" placeholder="Username" required>
         </div>
 
         <div class="input-box">
-            <input type="text" name="name" placeholder="Full name" required>
-            <span>👤</span>
+            <input type="email" name="email" placeholder="Email" required>
         </div>
 
         <div class="input-box">
-            <input type="password" id="signupPass" name="password" placeholder="New password" required>
-            <span onclick="toggleSignup()">👁</span>
+            <input type="password" name="password" placeholder="Password" required>
         </div>
 
-        <button class="btn">Create Account</button>
+        <button class="btn">Sign Up</button>
     </form>
 
     <div class="link">
         Already have an account? <a href="/login">Login</a>
     </div>
 </div>
-
-<script>
-function toggleSignup(){
-    const p = document.getElementById("signupPass");
-    p.type = p.type === "password" ? "text" : "password";
-}
-</script>
 
 </body>
 </html>
