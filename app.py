@@ -37,12 +37,17 @@ def intro():
         return render_template("maintenance.html")
     return render_template("index.html")
 
+# ---------- SPLASH ----------
+@app.route("/splash")
+def splash():
+    return render_template("splash.html")
+
 # ---------- ADMIN ----------
 @app.route("/admin", methods=["GET","POST"])
 def admin():
-    if request.method=="POST":
-        if request.form["password"]==ADMIN_PASSWORD:
-            session["admin"]=True
+    if request.method == "POST":
+        if request.form["password"] == ADMIN_PASSWORD:
+            session["admin"] = True
             return redirect("/admin_panel")
         flash("Wrong password")
     return render_template("admin.html")
@@ -65,50 +70,51 @@ def admin_off():
         set_maintenance(True)
     return redirect("/admin_panel")
 
-# ---------- AUTH ----------
+# ---------- SIGNUP ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if get_maintenance() and not session.get("admin"):
         return render_template("maintenance.html")
 
-    if request.method=="POST":
-        username=request.form["username"]
-        email=request.form["email"]
-        password=request.form["password"]
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
 
-        df=pd.read_excel(FILE)
+        df = pd.read_excel(FILE)
         if email in df["Email"].values:
             flash("Email already exists")
             return redirect("/signup")
 
-        hashed=generate_password_hash(password)
-        df.loc[len(df)]=[username,email,hashed]
-        df.to_excel(FILE,index=False)
+        hashed = generate_password_hash(password)
+        df.loc[len(df)] = [username, email, hashed]
+        df.to_excel(FILE, index=False)
 
         return redirect("/login")
 
     return render_template("signup.html")
 
+# ---------- LOGIN ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
     if get_maintenance() and not session.get("admin"):
         return render_template("maintenance.html")
 
-    if request.method=="POST":
-        email=request.form["email"]
-        password=request.form["password"]
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
 
-        df=pd.read_excel(FILE)
-        for _,row in df.iterrows():
-            if row["Email"]==email and check_password_hash(row["Password"],password):
-                session["user"]=row["Username"]
+        df = pd.read_excel(FILE)
+        for _, row in df.iterrows():
+            if row["Email"] == email and check_password_hash(row["Password"], password):
+                session["user"] = row["Username"]
                 return redirect("/home")
 
         flash("Invalid credentials")
 
     return render_template("login.html")
 
-# 🔐 SECURE LOGOUT (no back-button login)
+# ---------- LOGOUT (SECURE) ----------
 @app.route("/logout")
 def logout():
     session.clear()
@@ -118,6 +124,7 @@ def logout():
     response.headers["Expires"] = "0"
     return response
 
+# ---------- FORGOT ----------
 @app.route("/forgot")
 def forgot():
     return render_template("forgot.html")
@@ -130,8 +137,7 @@ def home():
     return render_template("home/home.html", user=session["user"])
 
 # ===== RUN =====
-if __name__=="__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
-
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 

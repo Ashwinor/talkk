@@ -1,33 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Talkk</title>
+<title>Starting Talkk…</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
-    margin:0;
-    height:100vh;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:Segoe UI, sans-serif;
+  margin:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
-
 video{
-    width:160px;
-    max-width:70%;
-    border-radius:20px;
-    box-shadow:0 0 30px rgba(255,255,255,0.25);
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 </style>
 </head>
-
 <body>
 
-<video id="vid" muted autoplay playsinline webkit-playsinline>
-    <source src="/static/intro.mp4" type="video/mp4">
+<video autoplay muted playsinline id="vid">
+  <source src="/static/intro.mp4" type="video/mp4">
 </video>
 
 <script>
@@ -35,13 +30,15 @@ const v = document.getElementById("vid");
 
 v.onended = ()=>{
     window.location.href="/login";
-};
+}
 
+// fallback if video doesn't trigger end
 setTimeout(()=>{
-    v.play().catch(()=>{});
-},300);
+    window.location.href="/login";
+}, 8000);
 </script>
 
 </body>
 </html>
+
 
