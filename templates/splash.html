@@ -5,16 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body,html{
+body{
     margin:0;
-    height:100%;
+    height:100vh;
     background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI, sans-serif;
 }
 
 video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+    width:160px;
+    max-width:70%;
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(255,255,255,0.25);
 }
 </style>
 </head>
@@ -28,7 +33,7 @@ video{
 <script>
 const v = document.getElementById("vid");
 
-v.onended = () => {
+v.onended = ()=>{
     window.location.href="/login";
 };
 
@@ -39,3 +44,4 @@ setTimeout(()=>{
 
 </body>
 </html>
+
