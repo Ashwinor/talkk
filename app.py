@@ -8,7 +8,7 @@ app.secret_key = "talkk_secret"
 
 # ===== ADMIN =====
 ADMIN_PASSWORD = "admin2002"
-maintenance = False   # Start online
+maintenance = False   # start online
 
 # ===== DATABASE =====
 FILE = "talkk_users.xlsx"
@@ -29,7 +29,7 @@ def splash():
         return render_template("maintenance.html")
     return render_template("splash.html")
 
-# ===== HOME UI =====
+# ===== HOME =====
 
 @app.route("/home")
 def home():
@@ -65,14 +65,14 @@ def admin_panel():
 def admin_on():
     global maintenance
     if session.get("admin"):
-        maintenance = False
+        maintenance=False
     return redirect("/admin_panel")
 
 @app.route("/admin2002off", methods=["POST"])
 def admin_off():
     global maintenance
     if session.get("admin"):
-        maintenance = True
+        maintenance=True
     return redirect("/admin_panel")
 
 # ===== AUTH =====
@@ -123,6 +123,14 @@ def dashboard():
         return render_template("maintenance.html")
     return render_template("dashboard.html")
 
+# ===== LOGOUT =====
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
 # ===== RUN =====
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
+

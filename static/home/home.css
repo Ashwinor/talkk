@@ -1,71 +1,80 @@
 body{
-    margin:0;
-    background:#0b0f1a;
-    font-family:Segoe UI, sans-serif;
-    color:white;
+  margin:0;
+  background:#0b0f1a;
+  color:white;
+  font-family:Segoe UI, sans-serif;
+}
+body.light{
+  background:#f1f1f1;
+  color:black;
 }
 
-/* TOP BAR */
 .top-bar{
-    height:60px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 20px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
+  height:60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 15px;
+  background:rgba(255,255,255,0.1);
 }
 
 .search{
-    width:50%;
-    padding:10px;
-    border-radius:30px;
-    border:none;
-    background:rgba(255,255,255,0.15);
-    color:white;
-    outline:none;
+  width:50%;
+  padding:8px;
+  border-radius:20px;
+  border:none;
 }
 
-.username, .notify{
-    font-size:18px;
-}
-
-/* MAIN */
 .main-area{
-    height:calc(100vh - 130px);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
+  height:calc(100vh - 130px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
 
-/* BOTTOM BAR */
 .bottom-bar{
-    height:70px;
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:rgba(255,255,255,0.05);
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    backdrop-filter: blur(10px);
+  height:70px;
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:rgba(255,255,255,0.1);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
 }
 
 .nav-btn{
-    width:60px;
-    height:60px;
-    background:rgba(255,255,255,0.15);
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    transition:0.3s;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:24px;
 }
 
-.nav-btn:hover{
-    background:#7f5cff;
+.settings{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#222;
+  padding:20px;
+  border-radius:15px;
+  display:none;
+}
+
+.settings button{
+  width:100%;
+  margin:10px 0;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+}
+
+.logout{
+  background:red;
+  color:white;
 }
