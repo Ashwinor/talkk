@@ -66,7 +66,6 @@ def admin_off():
     return redirect("/admin_panel")
 
 # ---------- AUTH ----------
-
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if get_maintenance() and not session.get("admin"):
@@ -109,10 +108,15 @@ def login():
 
     return render_template("login.html")
 
+# 🔐 SECURE LOGOUT (no back-button login)
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/login")
+    response = redirect("/login")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 @app.route("/forgot")
 def forgot():
@@ -128,5 +132,6 @@ def home():
 # ===== RUN =====
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
+
 
 
