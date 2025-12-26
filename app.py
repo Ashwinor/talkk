@@ -30,6 +30,18 @@ def splash():
         return render_template("maintenance.html")
     return render_template("splash.html")
 
+# -------- HOME UI --------
+
+@app.route("/home")
+def home():
+    if maintenance and not session.get("admin"):
+        return render_template("maintenance.html")
+    return render_template("home/home.html")
+
+@app.route("/home/<page>")
+def home_pages(page):
+    return render_template(f"home/{page}.html")
+
 # -------- ADMIN --------
 
 @app.route("/admin", methods=["GET","POST"])
@@ -72,7 +84,7 @@ def login():
         df=pd.read_excel(FILE)
         for _,row in df.iterrows():
             if row["Email"]==request.form["email"] and check_password_hash(row["Password"],request.form["password"]):
-                return redirect("/dashboard")
+                return redirect("/home")
         flash("Invalid credentials")
     return render_template("login.html")
 
@@ -87,9 +99,14 @@ def signup():
             flash("Email exists")
             return redirect("/signup")
 
-        df.loc[len(df)] = [request.form["username"], request.form["email"], generate_password_hash(request.form["password"])]
+        df.loc[len(df)] = [
+            request.form["username"],
+            request.form["email"],
+            generate_password_hash(request.form["password"])
+        ]
         df.to_excel(FILE,index=False)
         return redirect("/login")
+
     return render_template("signup.html")
 
 @app.route("/forgot")
@@ -104,6 +121,6 @@ def dashboard():
         return render_template("maintenance.html")
     return render_template("dashboard.html")
 
+# ===== RUN =====
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))
-
