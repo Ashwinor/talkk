@@ -5,64 +5,75 @@
 <title>Talkk Home</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
+
 <body>
 
-<!-- FLOATING BACKGROUND BUBBLES -->
-<div class="bubble" style="width:180px;height:180px;left:10%;top:20%"></div>
-<div class="bubble" style="width:240px;height:240px;left:70%;top:30%"></div>
-<div class="bubble" style="width:140px;height:140px;left:40%;top:70%"></div>
-<div class="bubble" style="width:100px;height:100px;left:80%;top:75%"></div>
+<!-- LIVE BACKGROUND -->
+<div class="bg-bubble purple"></div>
+<div class="bg-bubble blue"></div>
+<div class="bg-bubble pink"></div>
+
+<!-- Stars -->
+<script>
+for (let i=0;i<60;i++){
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=Math.random()*100+"%";
+ s.style.animationDelay=Math.random()*2+"s";
+ document.body.appendChild(s);
+}
+</script>
 
 <!-- TOP BAR -->
 <div class="top-bar">
-    <div class="user">{{ user }}</div>
-    <input class="search" placeholder="Search users…">
-    <div class="bell" onclick="toggleNotify()">🔔</div>
+  <div class="user">{{ user }}</div>
+  <input class="search" placeholder="Search users...">
+  <div class="bell" onclick="toggleNotify()">🔔</div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- Notifications -->
 <div class="notify-panel" id="notify">
-    <h3>Notifications</h3>
-    <p>No notifications found</p>
+  <h3>Notifications</h3>
+  <p>No notifications found</p>
 </div>
 
 <!-- SETTINGS -->
 <div class="settings-panel" id="settings">
-    <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Dark Mode</div>
-    <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
+  <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Dark Mode</div>
+  <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM GLASS DOCK -->
+<!-- GLASS DOCK -->
 <div class="bottom-nav">
-    <div class="nav-btn" onclick="alert('Video not available')">📹</div>
-    <div class="nav-btn" onclick="alert('Chat not available')">💬</div>
-    <div class="nav-btn" onclick="alert('Profile not available')">👤</div>
-    <div class="nav-btn" onclick="toggleSettings()">⚙️</div>
+  <div class="nav-btn" onclick="alert('Video coming soon')">📹</div>
+  <div class="nav-btn" onclick="alert('Chat coming soon')">💬</div>
+  <div class="nav-btn" onclick="alert('Profile coming soon')">👤</div>
+  <div class="nav-btn" onclick="toggleSettings()">⚙️</div>
 </div>
 
 <script>
 function toggleSettings(){
-  document.getElementById("settings").classList.toggle("show");
+ document.getElementById("settings").classList.toggle("show");
 }
 
 function toggleDark(){
-  document.body.classList.toggle("light");
+ document.body.classList.toggle("light");
 }
 
 function toggleNotify(){
-  const bell = document.querySelector(".bell");
-  const panel = document.getElementById("notify");
-
-  bell.classList.add("shake");
-  setTimeout(()=>bell.classList.remove("shake"),400);
-
-  panel.classList.add("show");
-  setTimeout(()=>panel.classList.remove("show"),5000);
+ let bell=document.querySelector(".bell");
+ let n=document.getElementById("notify");
+ bell.classList.add("shake");
+ setTimeout(()=>bell.classList.remove("shake"),400);
+ n.classList.add("show");
+ setTimeout(()=>n.classList.remove("show"),5000);
 }
 </script>
 
 </body>
 </html>
+
 
 
 
