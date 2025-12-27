@@ -28,12 +28,21 @@ for(let i=0;i<60;i++){
 <div class="top-bar">
   <div class="user">{{ user }}</div>
   <input class="search" placeholder="Search users">
-  <div class="bell" onclick="toggleNotify()">🔔</div>
+  <div class="bell-wrap" onclick="toggleNotify()">
+    🔔
+    <div class="badge" id="badge">5</div>
+  </div>
 </div>
 
+<!-- NOTIFICATIONS -->
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
-  <p>No notifications found</p>
+
+  <div class="notify-msg">💬 Hi there!</div>
+  <div class="notify-msg">💬 Are you free?</div>
+  <div class="notify-msg">💬 Good night 🌙</div>
+  <div class="notify-msg">💬 Let’s talk later</div>
+  <div class="notify-msg">💬 See you 👋</div>
 </div>
 
 <div class="settings-panel" id="settings">
@@ -49,6 +58,36 @@ for(let i=0;i<60;i++){
 </div>
 
 <script>
+let notifyOpen = false;
+let timer;
+
+function toggleNotify(){
+  const n = document.getElementById("notify");
+  const badge = document.getElementById("badge");
+
+  if(notifyOpen){
+    n.classList.remove("show");
+    notifyOpen=false;
+  }else{
+    n.classList.add("show");
+    notifyOpen=true;
+    badge.style.display="none";
+
+    clearTimeout(timer);
+    timer = setTimeout(()=>{ 
+      n.classList.remove("show");
+      notifyOpen=false;
+    },5000);
+  }
+}
+
+document.body.addEventListener("click",(e)=>{
+  if(!e.target.closest(".bell-wrap") && !e.target.closest(".notify-panel")){
+    document.getElementById("notify").classList.remove("show");
+    notifyOpen=false;
+  }
+});
+
 function toggleSettings(){
   document.getElementById("settings").classList.toggle("show");
 }
@@ -57,16 +96,11 @@ function toggleDark(){
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
 }
-
-function toggleNotify(){
-  const n=document.getElementById("notify");
-  n.classList.add("show");
-  setTimeout(()=>n.classList.remove("show"),5000);
-}
 </script>
 
 </body>
 </html>
+
 
 
 
