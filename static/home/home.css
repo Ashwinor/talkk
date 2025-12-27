@@ -1,48 +1,61 @@
-/* ===============================
-   GLOBAL + BACKGROUND (SHARP)
-================================ */
-
-html, body{
+html,body{
   width:100%;
   height:100%;
+  margin:0;
   overflow:hidden;
+  font-family:Segoe UI, sans-serif;
 }
 
+/* ===== FULL SCREEN LIVE BACKGROUND ===== */
 body{
-  margin:0;
-  font-family:Segoe UI, sans-serif;
+  position:relative;
   color:white;
 }
 
-/* Wallpaper layer (never blurred) */
+/* animated gradient wallpaper */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 20% 20%, #2a0a6b, #000 70%),
-    radial-gradient(circle at 80% 80%, #004cff, #000 70%);
-  z-index:-5;
+    radial-gradient(circle at 20% 20%, #3a0ca3, #000 60%),
+    radial-gradient(circle at 80% 80%, #4361ee, #000 60%);
+  animation:bgmove 15s infinite alternate;
+  z-index:-10;
 }
 
-/* Light mode wallpaper */
+@keyframes bgmove{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(30deg)}
+}
+
+/* light mode background */
 body.light::before{
   background:
-    radial-gradient(circle at 20% 20%, #ff9af5, #ffffff 70%),
-    radial-gradient(circle at 80% 80%, #8fd3ff, #ffffff 70%);
+    radial-gradient(circle at 20% 20%, #ffd6ff, #fff 60%),
+    radial-gradient(circle at 80% 80%, #cdb4db, #fff 60%);
 }
 
-body.light{
-  color:black;
+/* ===== FLOATING BUBBLES ===== */
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  animation:float 12s infinite ease-in-out;
+  filter:blur(2px);
 }
 
-/* ===============================
-   TOP BAR
-================================ */
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-60px)}
+  100%{transform:translateY(0)}
+}
 
+/* ===== TOP BAR ===== */
 .top-bar{
   position:fixed;
   top:0;
+  left:0;
   width:100%;
   height:60px;
   display:flex;
@@ -56,15 +69,10 @@ body.light{
 
 body.light .top-bar{
   background:rgba(0,0,0,0.85);
-  color:white;
 }
 
-.user{
-  min-width:80px;
-  font-weight:bold;
-}
+.user{ min-width:80px; }
 
-/* Search */
 .search{
   flex:1;
   max-width:320px;
@@ -74,29 +82,23 @@ body.light .top-bar{
   outline:none;
 }
 
-/* Bell */
 .bell{
   margin-left:auto;
-  font-size:22px;
   cursor:pointer;
+  font-size:22px;
 }
 
-/* Shake animation */
-.shake{
-  animation:shake 0.4s;
-}
+/* bell shake */
+.shake{ animation:shake .4s }
 @keyframes shake{
-  0%{transform:rotate(0deg)}
+  0%{transform:rotate(0)}
   25%{transform:rotate(10deg)}
   50%{transform:rotate(-10deg)}
   75%{transform:rotate(10deg)}
-  100%{transform:rotate(0deg)}
+  100%{transform:rotate(0)}
 }
 
-/* ===============================
-   NOTIFICATION PANEL
-================================ */
-
+/* ===== NOTIFICATION PANEL ===== */
 .notify-panel{
   position:fixed;
   top:60px;
@@ -106,18 +108,13 @@ body.light .top-bar{
   background:rgba(0,0,0,0.85);
   backdrop-filter:blur(25px);
   padding:20px;
-  transition:0.5s;
+  transition:.5s;
   z-index:9;
 }
 
-.notify-panel.show{
-  left:0;
-}
+.notify-panel.show{ left:0 }
 
-/* ===============================
-   BOTTOM GLASS DOCK
-================================ */
-
+/* ===== BOTTOM GLASS DOCK ===== */
 .bottom-nav{
   position:fixed;
   bottom:15px;
@@ -139,35 +136,30 @@ body.light .bottom-nav{
   background:rgba(0,0,0,0.85);
 }
 
-/* Liquid glow */
 .nav-btn{
   width:48px;
   height:48px;
   border-radius:50%;
-  background:rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.18);
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  position:relative;
-  transition:0.3s;
+  transition:.3s;
 }
 
 .nav-btn:hover{
   background:rgba(0,170,255,0.5);
-  box-shadow:0 0 20px rgba(0,170,255,0.9);
-  transform:scale(1.15);
+  box-shadow:0 0 25px rgba(0,170,255,1);
+  transform:scale(1.2);
 }
 
-/* ===============================
-   SETTINGS GLASS PANEL
-================================ */
-
+/* ===== SETTINGS PANEL ===== */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
-  transform:translate(-50%,-50%) scale(0.7);
+  transform:translate(-50%,-50%) scale(.7);
   width:90%;
   max-width:320px;
   background:rgba(0,0,0,0.85);
@@ -177,7 +169,7 @@ body.light .bottom-nav{
   text-align:center;
   opacity:0;
   pointer-events:none;
-  transition:0.4s;
+  transition:.4s;
   z-index:20;
 }
 
@@ -192,28 +184,7 @@ body.light .bottom-nav{
   padding:16px;
   border-radius:30px;
   margin-bottom:15px;
-  text-align:center;
   cursor:pointer;
-  font-weight:bold;
-  box-shadow:0 0 20px rgba(255,255,255,0.25);
+  box-shadow:0 0 20px rgba(255,255,255,0.3);
 }
 
-/* ===============================
-   FLOATING PARTICLES
-================================ */
-
-.particle{
-  position:absolute;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:white;
-  opacity:0.4;
-  animation:float 12s infinite ease-in-out;
-}
-
-@keyframes float{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-60px)}
-  100%{transform:translateY(0)}
-}
