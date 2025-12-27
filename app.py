@@ -108,7 +108,7 @@ def signup():
 
     return render_template("signup.html")
 
-# ---------- LOGIN ----------
+# ---------- LOGIN (SMART ERRORS) ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
     if get_maintenance() and not session.get("admin"):
@@ -122,11 +122,13 @@ def login():
         user = conn.execute("SELECT username,password FROM users WHERE email=?",(e,)).fetchone()
         conn.close()
 
-        if user and check_password_hash(user[1], p):
+        if not user:
+            flash("Email not found")
+        elif not check_password_hash(user[1], p):
+            flash("Wrong password")
+        else:
             session["user"] = user[0]
             return redirect("/home")
-
-        flash("Invalid login")
 
     return render_template("login.html")
 
@@ -164,3 +166,4 @@ def video():
 # =======================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
