@@ -6,52 +6,41 @@
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
 
-<body class="dark" onclick="closePanels(event)">
+<body class="dark" onclick="closePanels()">
 
-<!-- STARS -->
 <script>
 for(let i=0;i<60;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
   s.style.top=Math.random()*100+"%";
-  s.style.animationDelay=Math.random()*2+"s";
   document.body.appendChild(s);
 }
 </script>
 
-<!-- BUBBLES -->
-<div class="bubble" style="width:200px;height:200px;left:10%;top:20%"></div>
-<div class="bubble" style="width:260px;height:260px;left:70%;top:30%;animation-delay:2s"></div>
-<div class="bubble" style="width:150px;height:150px;left:40%;top:70%;animation-delay:4s"></div>
+<div class="bubble" style="width:200px;height:200px;left:10%;top:20%;background:#8f00ff;"></div>
+<div class="bubble" style="width:260px;height:260px;left:70%;top:30%;background:#00f2fe;"></div>
+<div class="bubble" style="width:150px;height:150px;left:40%;top:70%;background:#ff0080;"></div>
 
-<!-- TOP BAR -->
 <div class="top-bar">
   <div class="user">{{ user }}</div>
   <input class="search" placeholder="Search users">
-
   <div class="bell-wrap" onclick="toggleNotify(event)">
-    🔔
+    <div class="bell">🔔</div>
     <div class="badge" id="badge">100</div>
   </div>
 </div>
 
-<!-- NOTIFICATIONS -->
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
-  <p>You have new messages</p>
-  <p>Someone followed you</p>
-  <p>New chat request</p>
-  <p>More notifications…</p>
+  <div id="notifyList"></div>
 </div>
 
-<!-- SETTINGS -->
 <div class="settings-panel" id="settings">
   <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM DOCK -->
 <div class="bottom-nav">
   <div class="nav-btn">🏠<span>Home</span></div>
   <div class="nav-btn">💬<span>Chat</span></div>
@@ -60,49 +49,30 @@ for(let i=0;i<60;i++){
 </div>
 
 <script>
-let notifyOpen=false;
-let settingsOpen=false;
-let count=100;
+const notify=document.getElementById("notify");
+const settings=document.getElementById("settings");
+const badge=document.getElementById("badge");
+
+for(let i=1;i<=100;i++){
+  let div=document.createElement("div");
+  div.className="notify-card";
+  div.innerText=["Hi","Hello","Good Morning","Good Night","New Message"][i%5]+" #"+i;
+  document.getElementById("notifyList").appendChild(div);
+}
 
 function toggleNotify(e){
   e.stopPropagation();
-  const panel=document.getElementById("notify");
-  panel.classList.toggle("show");
-  notifyOpen=!notifyOpen;
-
-  if(notifyOpen){
-    count=0;
-    document.getElementById("badge").style.display="none";
-  }
+  notify.classList.toggle("show");
+  badge.style.display="none";
 }
-
 function toggleSettings(e){
   e.stopPropagation();
-  document.getElementById("settings").classList.toggle("show");
-  settingsOpen=!settingsOpen;
+  settings.classList.toggle("show");
 }
-
-function closePanels(e){
-  if(notifyOpen){
-    document.getElementById("notify").classList.remove("show");
-    notifyOpen=false;
-  }
-  if(settingsOpen){
-    document.getElementById("settings").classList.remove("show");
-    settingsOpen=false;
-  }
+function closePanels(){
+  notify.classList.remove("show");
+  settings.classList.remove("show");
 }
-
-/* simulate new messages */
-setInterval(()=>{
-  if(!notifyOpen){
-    count++;
-    const b=document.getElementById("badge");
-    b.style.display="flex";
-    b.textContent=count;
-  }
-},8000);
-
 function toggleDark(){
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
@@ -111,6 +81,7 @@ function toggleDark(){
 
 </body>
 </html>
+
 
 
 
