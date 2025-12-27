@@ -8,35 +8,34 @@
 
 <body>
 
-<!-- Floating Background -->
-<div class="bg-bubble b1"></div>
-<div class="bg-bubble b2"></div>
-<div class="bg-bubble b3"></div>
+<!-- Floating background -->
+<div class="bg-bubble" style="width:180px;height:180px;left:10%;top:20%;background:#8f00ff;"></div>
+<div class="bg-bubble" style="width:220px;height:220px;left:70%;top:30%;background:#00f2fe;"></div>
+<div class="bg-bubble" style="width:140px;height:140px;left:40%;top:70%;background:#ff0080;"></div>
 
-<!-- TOP BAR -->
 <div class="top-bar">
-  <div class="user">{{ user }}</div>
-  <input class="search" placeholder="Search users…">
-  <div class="bell" onclick="toggleNotify()">
-    🔔
-    <span class="badge">99+</span>
-  </div>
+    <div class="user">{{ user }}</div>
+    <input class="search" placeholder="Search users…">
+    <div class="bell" onclick="toggleNotify()">
+      🔔 <span class="badge" id="badge">99+</span>
+    </div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- Notification Panel -->
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
   <div class="notify-list" id="notifyList"></div>
 </div>
 
-<!-- SETTINGS -->
+<!-- SETTINGS PANEL -->
 <div class="settings-panel" id="settings">
   <div class="setting-btn" onclick="toggleDark()">🌗 Dark Mode</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM DOCK -->
+<!-- Bottom Dock -->
 <div class="bottom-nav">
+  <div class="nav-btn">🏠<span>Home</span></div>
   <div class="nav-btn">📹<span>Video</span></div>
   <div class="nav-btn">💬<span>Chat</span></div>
   <div class="nav-btn">👤<span>Profile</span></div>
@@ -44,62 +43,73 @@
 </div>
 
 <script>
-/* FAKE 100 NOTIFICATIONS */
-const msgs=[
-"Hi 👋","Hello","New message","Someone liked you","Friend request",
-"Good morning ☀️","Good night 🌙","Missed call","New follower","Chat request",
-"Welcome to Talkk","New friend joined","Someone waved 👋","You got a heart ❤️",
-"New story","User nearby","Say hi","Ping","Hey there","Connection found"
+const notify = document.getElementById("notify");
+const settings = document.getElementById("settings");
+const badge = document.getElementById("badge");
+
+let notifyOpen=false;
+let settingsOpen=false;
+
+/* 100 Fake messages */
+const messages=[
+ "Hi 👋","New follower","Good morning ☀️","Missed call 📞","Hey there",
+ "Good night 🌙","Welcome to Talkk","You got a message","User liked you",
+ "New request","Someone waved 👋","Friend joined","Chat available",
+ "New ping","You are trending","Someone viewed you","Incoming call",
+ "Profile updated","You have fans","Someone sent ❤️","User online",
+ "Hey 😄","New activity","Buzz!","Alert","Notification",
+ "Hey buddy","Good vibes","Someone sent Hi","Follow request",
+ "New DM","Talk now","Message received","Someone smiled 😊",
+ "New chat","Hey hello","Ping","Tap to reply","Someone is waiting",
+ "Incoming video","Buzz buzz","New badge","Activity update",
+ "Someone typed","Connection request","You got fame","Chat unlocked",
+ "Someone joined","Welcome back","New wave 👋","Incoming message"
 ];
 
 const list=document.getElementById("notifyList");
 for(let i=0;i<100;i++){
-  const d=document.createElement("div");
-  d.className="notify-item";
-  d.textContent=msgs[Math.floor(Math.random()*msgs.length)];
-  list.appendChild(d);
+  const div=document.createElement("div");
+  div.className="notify-item";
+  div.innerText=messages[i%messages.length];
+  list.appendChild(div);
 }
 
-/* NOTIFICATION */
+/* Notification toggle */
 function toggleNotify(){
-  const bell=document.querySelector(".bell");
-  const panel=document.getElementById("notify");
-  const set=document.getElementById("settings");
+  notifyOpen=!notifyOpen;
+  settingsOpen=false;
+  settings.classList.remove("show");
 
-  bell.classList.add("shake");
-  setTimeout(()=>bell.classList.remove("shake"),400);
+  notify.classList.toggle("show");
+  document.querySelector(".bell").classList.add("shake");
 
-  set.classList.remove("show");
-  panel.classList.toggle("show");
+  badge.style.display="none";
 
-  if(panel.classList.contains("show")){
-    setTimeout(()=>panel.classList.remove("show"),5000);
-  }
+  setTimeout(()=>document.querySelector(".bell").classList.remove("shake"),400);
+  setTimeout(()=>{ if(notifyOpen){ notify.classList.remove("show"); notifyOpen=false; } },5000);
 }
 
-/* SETTINGS */
+/* Settings toggle */
 function toggleSettings(){
-  const panel=document.getElementById("settings");
-  const notify=document.getElementById("notify");
-
+  settingsOpen=!settingsOpen;
+  notifyOpen=false;
   notify.classList.remove("show");
-  panel.classList.toggle("show");
+  settings.classList.toggle("show");
 }
 
-/* DARK MODE */
+/* Close on outside click */
+document.body.addEventListener("click",e=>{
+ if(!e.target.closest(".notify-panel") && !e.target.closest(".bell")){
+   notify.classList.remove("show"); notifyOpen=false;
+ }
+ if(!e.target.closest(".settings-panel") && !e.target.closest(".nav-btn")){
+   settings.classList.remove("show"); settingsOpen=false;
+ }
+})
+
 function toggleDark(){
   document.body.classList.toggle("light");
 }
-
-/* CLICK OUTSIDE CLOSE */
-document.body.addEventListener("click",e=>{
-  if(!e.target.closest(".bell") && !e.target.closest(".notify-panel")){
-    document.getElementById("notify").classList.remove("show");
-  }
-  if(!e.target.closest(".nav-btn") && !e.target.closest(".settings-panel")){
-    document.getElementById("settings").classList.remove("show");
-  }
-});
 </script>
 
 </body>
