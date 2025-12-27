@@ -10,11 +10,11 @@
 
 <script>
 for(let i=0;i<60;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*100+"%";
-  document.body.appendChild(s);
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=Math.random()*100+"%";
+ document.body.appendChild(s);
 }
 </script>
 
@@ -26,7 +26,7 @@ for(let i=0;i<60;i++){
   <div class="user">{{ user }}</div>
   <input class="search" placeholder="Search users">
   <div class="bell-wrap" onclick="toggleNotify(event)">
-    <div class="bell">🔔</div>
+    <div class="bell" id="bell">🔔</div>
     <div class="badge" id="badge">100</div>
   </div>
 </div>
@@ -42,7 +42,7 @@ for(let i=0;i<60;i++){
 </div>
 
 <div class="bottom-nav">
-  <div class="nav-btn">🏠<span>Home</span></div>
+  <div class="nav-btn" onclick="window.location.href='/video'">📹<span>Video</span></div>
   <div class="nav-btn">💬<span>Chat</span></div>
   <div class="nav-btn">👤<span>Profile</span></div>
   <div class="nav-btn" onclick="toggleSettings(event)">⚙️<span>Settings</span></div>
@@ -52,35 +52,42 @@ for(let i=0;i<60;i++){
 const notify=document.getElementById("notify");
 const settings=document.getElementById("settings");
 const badge=document.getElementById("badge");
+const bell=document.getElementById("bell");
 
 for(let i=1;i<=100;i++){
-  let div=document.createElement("div");
-  div.className="notify-card";
-  div.innerText=["Hi","Hello","Good Morning","Good Night","New Message"][i%5]+" #"+i;
-  document.getElementById("notifyList").appendChild(div);
+ let div=document.createElement("div");
+ div.className="notify-card";
+ div.innerText=["Hi","Hello","Good Morning","New Message","Followed You"][i%5]+" #"+i;
+ document.getElementById("notifyList").appendChild(div);
 }
 
 function toggleNotify(e){
-  e.stopPropagation();
-  notify.classList.toggle("show");
-  badge.style.display="none";
+ e.stopPropagation();
+ bell.classList.add("shake");
+ setTimeout(()=>bell.classList.remove("shake"),400);
+ notify.classList.toggle("show");
+ badge.style.display="none";
 }
+
 function toggleSettings(e){
-  e.stopPropagation();
-  settings.classList.toggle("show");
+ e.stopPropagation();
+ settings.classList.toggle("show");
 }
+
 function closePanels(){
-  notify.classList.remove("show");
-  settings.classList.remove("show");
+ notify.classList.remove("show");
+ settings.classList.remove("show");
 }
+
 function toggleDark(){
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
+ document.body.classList.toggle("dark");
+ document.body.classList.toggle("light");
 }
 </script>
 
 </body>
 </html>
+
 
 
 

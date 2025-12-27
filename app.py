@@ -51,8 +51,6 @@ def maintenance_block():
 
 @app.route("/")
 def intro():
-    if get_maintenance() and not session.get("admin"):
-        return render_template("maintenance.html")
     return render_template("index.html")
 
 @app.route("/splash")
@@ -154,10 +152,15 @@ def home():
         return redirect("/login")
     return render_template("home/home.html", user=session["user"])
 
+# ---------- VIDEO ----------
+@app.route("/video")
+def video():
+    if not session.get("user"):
+        return redirect("/login")
+    return render_template("home/video.html")
+
 # =======================
 #  RUN
 # =======================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
-

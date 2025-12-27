@@ -8,12 +8,9 @@ body{
   color:white;
 }
 
-body.dark{
-  background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
-}
-body.light{
-  background:radial-gradient(circle at 20% 20%, #004466, #000 65%);
-}
+/* BACKGROUNDS */
+body.dark{background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);}
+body.light{background:radial-gradient(circle at 20% 20%, #004466, #000 65%);}
 
 /* STARS */
 .star{position:absolute;width:2px;height:2px;background:white;opacity:.6;animation:twinkle 2s infinite alternate;}
@@ -37,18 +34,16 @@ body.light{
   z-index:10;
 }
 .user{min-width:80px;font-weight:bold;}
-
-.search{
-  flex:1;
-  padding:8px 14px;
-  border-radius:20px;
-  border:none;
-  outline:none;
-}
+.search{flex:1;padding:8px 14px;border-radius:20px;border:none;}
 
 /* BELL */
 .bell-wrap{position:relative;}
 .bell{font-size:22px;cursor:pointer;}
+.shake{animation:shake .4s;}
+@keyframes shake{
+  0%{transform:rotate(0)}25%{transform:rotate(15deg)}
+  50%{transform:rotate(-15deg)}75%{transform:rotate(10deg)}100%{transform:rotate(0)}
+}
 .badge{
   position:absolute;
   top:-5px;right:-6px;
@@ -59,7 +54,7 @@ body.light{
   border-radius:50%;
 }
 
-/* NOTIFICATION PANEL */
+/* NOTIFICATIONS */
 .notify-panel{
   position:fixed;
   top:60px;
@@ -87,12 +82,13 @@ body.light{
   background:rgba(0,180,255,.5);
   box-shadow:0 0 20px rgba(0,180,255,.9);
 }
+.notify-card{animation:slide .4s;}
+@keyframes slide{from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);}}
 
 /* SETTINGS */
 .settings-panel{
   position:fixed;
-  top:50%;
-  left:50%;
+  top:50%;left:50%;
   transform:translate(-50%,-50%) scale(.7);
   background:rgba(0,0,0,.85);
   padding:25px;
@@ -151,8 +147,30 @@ body.light{
 }
 .nav-btn span{font-size:11px;margin-top:4px;}
 
-
-
+/* GLASS FORM */
+.glass-form{
+  width:300px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(20px);
+  padding:30px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
+}
+.glass-form input{
+  width:100%;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  margin:10px 0;
+}
+.glass-form button{
+  padding:12px 30px;
+  border-radius:20px;
+  border:none;
+  background:#00f2fe;
+  font-weight:bold;
+}
 
 
 
