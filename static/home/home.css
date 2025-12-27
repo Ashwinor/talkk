@@ -1,34 +1,49 @@
+*{box-sizing:border-box;}
+
 body{
   margin:0;
-  font-family:Segoe UI, sans-serif;
+  height:100vh;
   overflow:hidden;
+  font-family:Segoe UI, sans-serif;
   color:white;
 }
 
-/* ====== BACKGROUNDS ====== */
+/* 🌌 BACKGROUNDS */
 body.dark{
   background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
 }
-
 body.light{
-  background:radial-gradient(circle at 20% 20%, #003d5c, #000 65%);
+  background:radial-gradient(circle at 20% 20%, #004466, #000 65%);
 }
 
-/* ====== BUBBLES ====== */
+/* 🌟 STARS */
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  opacity:.6;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+  from{opacity:.3;}
+  to{opacity:1;}
+}
+
+/* 🫧 BUBBLES */
 .bubble{
   position:absolute;
   border-radius:50%;
-  opacity:0.35;
-  animation:float 14s infinite ease-in-out;
+  opacity:.25;
+  animation:float 12s infinite ease-in-out;
 }
-
-.dark .bubble{ background:#8f00ff; }
-.light .bubble{ background:#00f2fe; }
+.dark .bubble{background:#8f00ff;}
+.light .bubble{background:#00f2fe;}
 
 @keyframes float{
-  0%{ transform:translate(0,0); }
-  50%{ transform:translate(40px,-40px); }
-  100%{ transform:translate(0,0); }
+  0%{transform:translate(0,0);}
+  50%{transform:translate(40px,-40px);}
+  100%{transform:translate(0,0);}
 }
 
 /* ===== TOP BAR ===== */
@@ -40,8 +55,9 @@ body.light{
   display:flex;
   align-items:center;
   padding:0 15px;
-  background:rgba(0,0,0,0.45);
+  background:rgba(0,0,0,.5);
   backdrop-filter:blur(14px);
+  z-index:10;
 }
 
 .user{min-width:80px;font-weight:bold;}
@@ -55,30 +71,31 @@ body.light{
   outline:none;
 }
 
-/* ===== BELL ===== */
+/* 🔔 */
 .bell{cursor:pointer;}
 
-/* ===== NOTIFY ===== */
+/* 📩 NOTIFY */
 .notify-panel{
   position:fixed;
   top:60px;
   right:-280px;
   width:260px;
   height:100%;
-  background:rgba(0,0,0,0.75);
+  background:rgba(0,0,0,.75);
   backdrop-filter:blur(20px);
   padding:20px;
   transition:.5s;
+  z-index:10;
 }
-.notify-panel.show{ right:0; }
+.notify-panel.show{right:0;}
 
-/* ===== SETTINGS ===== */
+/* ⚙ SETTINGS */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(.7);
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,.85);
   padding:25px;
   border-radius:25px;
   opacity:0;
@@ -101,7 +118,7 @@ body.light{
   text-align:center;
 }
 
-/* ===== BOTTOM DOCK ===== */
+/* 🚀 BOTTOM DOCK */
 .bottom-nav{
   position:fixed;
   bottom:15px;
@@ -116,9 +133,9 @@ body.light{
   display:flex;
   justify-content:space-around;
   align-items:center;
+  z-index:10;
 }
 
-/* buttons */
 .nav-btn{
   width:55px;
   height:65px;
