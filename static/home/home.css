@@ -104,7 +104,7 @@ body.light{
   100%{transform:rotate(0);}
 }
 
-/* NOTIFICATIONS */
+/* NOTIFICATIONS PANEL */
 .notify-panel{
   position:fixed;
   top:60px;
@@ -121,17 +121,50 @@ body.light{
 .notify-panel.show{
   right:0;
 }
+
+/* NOTIFICATION CARD */
 .notify-card{
+  position:relative;
+  overflow:hidden;
   background:rgba(255,255,255,.12);
   margin-bottom:12px;
   padding:12px;
   border-radius:15px;
   transition:.3s;
 }
+
+/* hover animation */
 .notify-card:hover{
   transform:translateY(-4px) scale(1.05);
   background:rgba(0,200,255,.45);
   box-shadow:0 0 25px rgba(0,200,255,.9);
+}
+
+/* swipe delete button */
+.notify-card .delete-btn{
+  position:absolute;
+  right:-80px;
+  top:0;
+  height:100%;
+  width:80px;
+  background:#ff3b3b;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  transition:.3s;
+}
+
+/* show delete on swipe */
+.notify-card.swipe .delete-btn{
+  right:0;
+}
+
+/* unread glow */
+.notify-card.unread{
+  box-shadow:0 0 15px rgba(0,200,255,.7);
+  background:rgba(0,200,255,.25);
 }
 
 /* SETTINGS */

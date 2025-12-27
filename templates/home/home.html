@@ -15,6 +15,7 @@
 <body class="dark">
 
 <script>
+/* stars */
 for(let i=0;i<60;i++){
  let s=document.createElement("div");
  s.className="star";
@@ -35,7 +36,7 @@ for(let i=0;i<60;i++){
   <input class="search" placeholder="Search users">
   <div class="bell-wrap" onclick="toggleNotify(event)">
     <div class="bell" id="bell">🔔</div>
-    <div class="badge" id="badge">100</div>
+    <div class="badge" id="badge">0</div>
   </div>
 </div>
 
@@ -43,6 +44,9 @@ for(let i=0;i<60;i++){
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
   <div id="notifyList"></div>
+  <div id="emptyMsg" style="text-align:center;opacity:.6;margin-top:30px;">
+    No new notifications
+  </div>
 </div>
 
 <!-- Settings -->
@@ -60,42 +64,112 @@ for(let i=0;i<60;i++){
 </div>
 
 <script>
-const notify=document.getElementById("notify");
-const settings=document.getElementById("settings");
-const badge=document.getElementById("badge");
-const bell=document.getElementById("bell");
+const notify = document.getElementById("notify");
+const notifyList = document.getElementById("notifyList");
+const badge = document.getElementById("badge");
+const bell = document.getElementById("bell");
+const settings = document.getElementById("settings");
+const emptyMsg = document.getElementById("emptyMsg");
 
-/* create 100 fake notifications */
-for(let i=1;i<=100;i++){
- let div=document.createElement("div");
- div.className="notify-card";
- div.innerText=["Hi","Hello","Good Morning","New Message","Followed You"][i%5]+" #"+i;
- document.getElementById("notifyList").appendChild(div);
+/* ===============================
+   🔔 REAL NOTIFICATION SYSTEM
+================================*/
+let notifications = JSON.parse(localStorage.getItem("talkk_notifications") || "[]");
+
+function save(){
+  localStorage.setItem("talkk_notifications", JSON.stringify(notifications));
 }
 
-/* Bell */
+function updateBadge(){
+  const unread = notifications.filter(n=>!n.read).length;
+  badge.textContent = unread;
+  badge.style.display = unread ? "block" : "none";
+}
+
+function renderNotifications(){
+  notifyList.innerHTML = "";
+
+  if(notifications.length===0){
+    emptyMsg.style.display="block";
+    return;
+  }
+  emptyMsg.style.display="none";
+
+  notifications.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "notify-card " + (n.read ? "" : "unread");
+    div.innerHTML = `
+      ${n.text}
+      <div class="delete-btn">🗑</div>
+    `;
+
+    let startX=0;
+    div.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+    div.addEventListener("touchmove",e=>{
+      if(e.touches[0].clientX - startX > 50){
+        div.classList.add("swipe");
+      }
+    });
+
+    div.querySelector(".delete-btn").onclick=()=>{
+      notifications = notifications.filter(x=>x.id!==n.id);
+      save(); renderNotifications(); updateBadge();
+    };
+
+    notifyList.appendChild(div);
+  });
+}
+
+/* Create demo notifications once */
+if(notifications.length===0){
+  for(let i=1;i<=15;i++){
+    notifications.push({
+      id:Date.now()+i,
+      text:["Hi","New Message","Followed you","Commented","Good Morning"][i%5],
+      read:false
+    });
+  }
+  save();
+}
+
+renderNotifications();
+updateBadge();
+
+/* ===============================
+   🔔 Bell
+================================*/
 function toggleNotify(e){
  e.stopPropagation();
  bell.classList.add("shake");
  setTimeout(()=>bell.classList.remove("shake"),400);
  notify.classList.toggle("show");
- badge.style.display="none";
+
+ if(notify.classList.contains("show")){
+   notifications.forEach(n=>n.read=true);
+   save();
+   updateBadge();
+   renderNotifications();
+ }
 }
 
-/* Settings */
+/* ===============================
+   ⚙ Settings
+================================*/
 function toggleSettings(e){
  e.stopPropagation();
  settings.classList.toggle("show");
 }
 
-/* Dark / Light */
+/* ===============================
+   🌗 Dark Mode
+================================*/
 function toggleDark(e){
  e.stopPropagation();
  document.body.classList.toggle("dark");
  document.body.classList.toggle("light");
 }
 
-/* Click anywhere closes panels */
+/* Close panels when clicking outside */
 document.addEventListener("click",()=>{
  notify.classList.remove("show");
  settings.classList.remove("show");
@@ -104,6 +178,7 @@ document.addEventListener("click",()=>{
 
 </body>
 </html>
+
 
 
 
