@@ -1,46 +1,39 @@
 body{
   margin:0;
   font-family:Segoe UI, sans-serif;
-  background:#000;
+  background:black;
   color:white;
-  overflow-x:hidden;
+  overflow:hidden;
 }
-
 body.light{
-  background:#f2f2f2;
+  background:#eee;
   color:black;
 }
 
-/* ========== TOP BAR ========== */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+/* TOP BAR */
 .top-bar{
   position:fixed;
   top:0;
-  left:0;
   width:100%;
   height:60px;
-  background:rgba(0,0,0,0.75);
+  background:rgba(0,0,0,0.7);
   backdrop-filter:blur(20px);
   display:flex;
   align-items:center;
   gap:10px;
   padding:0 15px;
-  box-sizing:border-box;
-  z-index:10;
 }
 
-body.light .top-bar{
-  background:rgba(0,0,0,0.9);
-  color:white;
-}
+.user{min-width:80px}
 
-.user{
-  min-width:80px;
-  font-weight:bold;
-}
-
-/* SEARCH BAR */
 .search{
-  flex:1;
+  width:50%;
   max-width:300px;
   padding:8px 15px;
   border-radius:20px;
@@ -48,16 +41,11 @@ body.light .top-bar{
   outline:none;
 }
 
-/* BELL */
 .bell{
   margin-left:auto;
-  font-size:20px;
   cursor:pointer;
 }
-
-.shake{
-  animation:shake 0.4s;
-}
+.shake{animation:shake .4s}
 @keyframes shake{
   0%{transform:rotate(0deg)}
   25%{transform:rotate(10deg)}
@@ -66,99 +54,82 @@ body.light .top-bar{
   100%{transform:rotate(0deg)}
 }
 
-/* ========== NOTIFICATION PANEL ========== */
+/* NOTIFICATION */
 .notify-panel{
   position:fixed;
   top:60px;
-  right:-280px;
-  width:260px;
+  right:-300px;
+  width:250px;
   height:100%;
-  background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(25px);
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
   padding:20px;
-  transition:0.5s;
-  z-index:15;
+  transition:.5s;
 }
+.notify-panel.show{right:0}
 
-.notify-panel.show{
-  right:0;
-}
-
-/* ========== SETTINGS POPUP ========== */
+/* SETTINGS */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
-  transform:translate(-50%,-50%) scale(0.7);
+  transform:translate(-50%,-50%) scale(.7);
   width:90%;
   max-width:320px;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,.85);
   backdrop-filter:blur(25px);
   border-radius:25px;
   padding:25px;
   text-align:center;
   opacity:0;
   pointer-events:none;
-  transition:0.4s;
+  transition:.4s;
   z-index:99;
 }
-
 .settings-panel.show{
   opacity:1;
   pointer-events:auto;
   transform:translate(-50%,-50%) scale(1);
 }
-
 .setting-btn{
-  background:rgba(255,255,255,0.18);
+  background:rgba(255,255,255,.18);
   padding:16px;
   border-radius:30px;
   margin-bottom:15px;
-  text-align:center;
   cursor:pointer;
   font-weight:bold;
-  box-shadow:0 0 20px rgba(255,255,255,0.25);
+  box-shadow:0 0 20px rgba(255,255,255,.25);
 }
 
-/* ========== BOTTOM NAV BAR ========== */
+/* BOTTOM NAV */
 .bottom-nav{
   position:fixed;
   bottom:15px;
   left:50%;
   transform:translateX(-50%);
   width:90%;
-  max-width:420px;
+  max-width:400px;
   height:65px;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,.85);
   backdrop-filter:blur(20px);
   border-radius:40px;
   display:flex;
   justify-content:space-around;
   align-items:center;
-  z-index:10;
 }
 
-body.light .bottom-nav{
-  background:rgba(0,0,0,0.95);
-}
-
-/* NAV BUTTONS */
 .nav-btn{
-  width:48px;
-  height:48px;
+  width:45px;
+  height:45px;
   border-radius:50%;
-  background:rgba(255,255,255,0.25);
+  background:rgba(255,255,255,.2);
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  transition:0.35s;
+  transition:.3s;
 }
-
 .nav-btn:hover{
-  background:rgba(255,255,255,0.5);
-  transform:scale(1.2);
+  background:rgba(255,255,255,.5);
+  transform:scale(1.15);
 }
-
-
-

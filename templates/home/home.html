@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Talkk Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
 
 <body>
 
+<!-- FLOATING PARTICLES -->
+<canvas id="particles"></canvas>
+
 <!-- TOP BAR -->
 <div class="top-bar">
-    <div class="user">{{ user }}</div>
-
-    <input class="search" placeholder="Search users...">
-
-    <div class="bell" id="bell">🔔</div>
+  <div class="user">{{ user }}</div>
+  <input class="search" placeholder="Search users...">
+  <div class="bell" onclick="toggleNotify()">🔔</div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- NOTIFICATION PANEL -->
 <div class="notify-panel" id="notify">
-    <h3>Notifications</h3>
-    <p>No notifications yet</p>
+  <h3>Notifications</h3>
+  <p>No notifications</p>
 </div>
 
-<!-- SETTINGS -->
+<!-- CENTER SETTINGS -->
 <div class="settings-panel" id="settings">
-    <div class="setting-btn" onclick="toggleMode()">🌗 Toggle Dark Mode</div>
-    <div class="setting-btn" onclick="window.location='/logout'">🚪 Logout</div>
+  <div class="setting-btn" onclick="toggleTheme()">Dark / Light</div>
+  <div class="setting-btn" onclick="location.href='/logout'">Logout</div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-    <div class="nav-btn" onclick="showAlert('Video not available yet')">📹</div>
-    <div class="nav-btn" onclick="showAlert('Chat not available yet')">💬</div>
-    <div class="nav-btn" onclick="showAlert('Profile not available yet')">👤</div>
-    <div class="nav-btn" onclick="toggleSettings()">⚙</div>
+  <div class="nav-btn" onclick="alert('Video chat coming soon')">📹</div>
+  <div class="nav-btn" onclick="alert('Chat coming soon')">💬</div>
+  <div class="nav-btn" onclick="alert('Profile coming soon')">👤</div>
+  <div class="nav-btn" onclick="toggleSettings()">⚙️</div>
 </div>
 
+<script src="/static/home/particles.js"></script>
+
 <script>
-document.getElementById("bell").onclick = ()=>{
-  document.getElementById("notify").classList.toggle("show")
-  document.getElementById("bell").classList.toggle("shake")
+let notifyTimer;
+
+function toggleNotify(){
+  let n=document.getElementById("notify");
+  let b=document.querySelector(".bell");
+  b.classList.add("shake");
+
+  setTimeout(()=>b.classList.remove("shake"),400);
+
+  n.classList.toggle("show");
+
+  clearTimeout(notifyTimer);
+  notifyTimer=setTimeout(()=>{
+    n.classList.remove("show");
+  },5000);
 }
 
 function toggleSettings(){
-  document.getElementById("settings").classList.toggle("show")
+  document.getElementById("settings").classList.toggle("show");
 }
 
-function toggleMode(){
-  document.body.classList.toggle("light")
-}
-
-function showAlert(msg){
-  alert(msg)
+function toggleTheme(){
+  document.body.classList.toggle("light");
 }
 </script>
 
