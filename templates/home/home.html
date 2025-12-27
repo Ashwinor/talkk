@@ -12,6 +12,7 @@
 <body class="dark">
 
 <script>
+/* stars */
 for(let i=0;i<60;i++){
  let s=document.createElement("div");
  s.className="star";
@@ -38,6 +39,23 @@ for(let i=0;i<60;i++){
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
   <div id="notifyList"></div>
+
+  <!-- UNDO BAR -->
+  <div id="undoBar" style="
+    display:none;
+    position:sticky;
+    bottom:10px;
+    margin-top:15px;
+    background:rgba(0,200,255,.25);
+    backdrop-filter:blur(15px);
+    padding:12px;
+    border-radius:15px;
+    text-align:center;
+    font-weight:bold;
+  ">
+    Message deleted — <span id="undoBtn" style="color:cyan;cursor:pointer">UNDO</span>
+  </div>
+
   <div id="emptyMsg" style="text-align:center;opacity:.6;margin-top:30px;">
     No new notifications
   </div>
@@ -66,6 +84,7 @@ const emptyMsg=document.getElementById("emptyMsg")
 let notifications=[]
 let deleteTimer=null
 
+/* LOAD FROM SERVER */
 async function loadNotifications(){
   const r=await fetch("/api/notifications")
   const d=await r.json()
@@ -113,16 +132,27 @@ function addSwipe(card,id){
   card.querySelector(".delete-btn").onclick=()=>deleteWithUndo(id,card)
 }
 
+/* DELETE + KEEP PANEL OPEN */
 function deleteWithUndo(id,card){
-  card.innerHTML="Deleted — <span style='color:cyan;cursor:pointer'>UNDO</span>"
+  card.style.opacity="0.4"
+  card.style.pointerEvents="none"
+  showUndo(id)
+}
 
-  deleteTimer=setTimeout(()=>{
-    fetch("/api/delete/"+id,{method:"POST"})
-    loadNotifications()
+function showUndo(id){
+  let bar=document.getElementById("undoBar")
+  bar.style.display="flex"
+
+  let timer=setTimeout(()=>{
+    fetch("/api/delete/"+id,{method:"POST"}).then(()=>{
+      loadNotifications()
+      bar.style.display="none"
+    })
   },2000)
 
-  card.querySelector("span").onclick=()=>{
-    clearTimeout(deleteTimer)
+  document.getElementById("undoBtn").onclick=()=>{
+    clearTimeout(timer)
+    bar.style.display="none"
     loadNotifications()
   }
 }
@@ -160,6 +190,7 @@ loadNotifications()
 
 </body>
 </html>
+
 
 
 
