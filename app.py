@@ -10,11 +10,12 @@ MAINT_FILE = "maintenance.txt"
 DB = "users.db"
 
 # =======================
-#  DATABASE
+# DATABASE
 # =======================
 def db():
     return sqlite3.connect(DB)
 
+# Users table
 if not os.path.exists(DB):
     conn = db()
     conn.execute("""
@@ -28,8 +29,21 @@ if not os.path.exists(DB):
     conn.commit()
     conn.close()
 
+# Notifications table (CRITICAL)
+conn = db()
+conn.execute("""
+CREATE TABLE IF NOT EXISTS notifications(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    text TEXT,
+    is_read INTEGER DEFAULT 0
+)
+""")
+conn.commit()
+conn.close()
+
 # =======================
-#  MAINTENANCE MODE
+# MAINTENANCE MODE
 # =======================
 def get_maintenance():
     if not os.path.exists(MAINT_FILE):
@@ -42,11 +56,11 @@ def set_maintenance(state):
 @app.before_request
 def maintenance_block():
     if get_maintenance() and not session.get("admin"):
-        if not request.path.startswith(("/admin", "/static")):
+        if not request.path.startswith(("/admin", "/static", "/api")):
             return render_template("maintenance.html")
 
 # =======================
-#  ROUTES
+# ROUTES
 # =======================
 
 @app.route("/")
@@ -102,14 +116,12 @@ def signup():
 
         conn = db()
 
-        name_exists = conn.execute("SELECT 1 FROM users WHERE username=?", (u,)).fetchone()
-        if name_exists:
+        if conn.execute("SELECT 1 FROM users WHERE username=?", (u,)).fetchone():
             conn.close()
             flash("Username already exists")
             return redirect("/signup")
 
-        email_exists = conn.execute("SELECT 1 FROM users WHERE email=?", (e,)).fetchone()
-        if email_exists:
+        if conn.execute("SELECT 1 FROM users WHERE email=?", (e,)).fetchone():
             conn.close()
             flash("Email already exists")
             return redirect("/signup")
@@ -143,11 +155,21 @@ def login():
             flash("Wrong password")
         else:
             session["user"] = user[0]
+
+            # 🔥 Add demo notifications ONCE per login
+            conn = db()
+            conn.execute("INSERT INTO notifications(username,text) VALUES(?,?)",
+                         (session["user"], "Welcome to Talkk 👋"))
+            conn.execute("INSERT INTO notifications(username,text) VALUES(?,?)",
+                         (session["user"], "You have a new follower"))
+            conn.commit()
+            conn.close()
+
             return redirect("/home")
 
     return render_template("login.html")
 
-# ---------- LOGOUT (SECURE) ----------
+# ---------- LOGOUT ----------
 @app.route("/logout")
 def logout():
     session.clear()
@@ -157,12 +179,7 @@ def logout():
     response.headers["Expires"] = "0"
     return response
 
-# ---------- FORGOT ----------
-@app.route("/forgot")
-def forgot():
-    return render_template("forgot.html")
-
-# ---------- HOME (SECURE) ----------
+# ---------- HOME ----------
 @app.route("/home")
 def home():
     if "user" not in session:
@@ -176,8 +193,55 @@ def video():
         return redirect("/login")
     return render_template("home/video.html")
 
+# ===========================
+# 🔔 NOTIFICATIONS API
+# ===========================
+
+@app.route("/api/notifications")
+def get_notifications():
+    if "user" not in session:
+        return {"error":"login required"}
+
+    conn = db()
+    rows = conn.execute(
+        "SELECT id,text,is_read FROM notifications WHERE username=? ORDER BY id DESC",
+        (session["user"],)
+    ).fetchall()
+    conn.close()
+
+    return {
+        "notifications":[
+            {"id":r[0],"text":r[1],"read":bool(r[2])} for r in rows
+        ]
+    }
+
+@app.route("/api/read_all", methods=["POST"])
+def read_all():
+    if "user" not in session:
+        return {"error":"login"}
+
+    conn = db()
+    conn.execute("UPDATE notifications SET is_read=1 WHERE username=?", (session["user"],))
+    conn.commit()
+    conn.close()
+    return {"ok":True}
+
+@app.route("/api/delete/<int:nid>", methods=["POST"])
+def delete_notification(nid):
+    if "user" not in session:
+        return {"error":"login"}
+
+    conn = db()
+    conn.execute(
+        "DELETE FROM notifications WHERE id=? AND username=?",
+        (nid,session["user"])
+    )
+    conn.commit()
+    conn.close()
+    return {"ok":True}
+
 # =======================
-#  RUN
+# RUN
 # =======================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

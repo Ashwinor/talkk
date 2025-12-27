@@ -12,7 +12,6 @@
 <body class="dark">
 
 <script>
-/* stars */
 for(let i=0;i<60;i++){
  let s=document.createElement("div");
  s.className="star";
@@ -57,167 +56,111 @@ for(let i=0;i<60;i++){
 </div>
 
 <script>
-const notify = document.getElementById("notify");
-const notifyList = document.getElementById("notifyList");
-const badge = document.getElementById("badge");
-const bell = document.getElementById("bell");
-const settings = document.getElementById("settings");
-const emptyMsg = document.getElementById("emptyMsg");
+const notify=document.getElementById("notify")
+const notifyList=document.getElementById("notifyList")
+const badge=document.getElementById("badge")
+const bell=document.getElementById("bell")
+const settings=document.getElementById("settings")
+const emptyMsg=document.getElementById("emptyMsg")
 
-let notifications = JSON.parse(localStorage.getItem("talkk_notifications") || "[]");
-let deleteTimer = null;
+let notifications=[]
+let deleteTimer=null
 
-/* save */
-function save(){
-  localStorage.setItem("talkk_notifications", JSON.stringify(notifications));
+async function loadNotifications(){
+  const r=await fetch("/api/notifications")
+  const d=await r.json()
+  notifications=d.notifications || []
+  render()
+  updateBadge()
 }
 
-/* badge */
 function updateBadge(){
-  const unread = notifications.filter(n=>!n.read).length;
-  badge.innerText = unread;
-  badge.style.display = unread ? "block" : "none";
+  const unread=notifications.filter(n=>!n.read).length
+  badge.innerText=unread
+  badge.style.display=unread?"block":"none"
 }
 
-/* render */
 function render(){
-  notifyList.innerHTML="";
-
+  notifyList.innerHTML=""
   if(notifications.length===0){
-    emptyMsg.style.display="block";
-    return;
+    emptyMsg.style.display="block"
+    return
   }
-  emptyMsg.style.display="none";
+  emptyMsg.style.display="none"
 
   notifications.forEach(n=>{
-    const card = document.createElement("div");
-    card.className="notify-card "+(n.read?"":"unread");
+    const card=document.createElement("div")
+    card.className="notify-card "+(n.read?"":"unread")
+    card.innerHTML=`${n.text}<div class="delete-btn">Delete</div>`
+    notifyList.appendChild(card)
 
-    const text = document.createElement("div");
-    text.innerText=n.text;
-
-    const del = document.createElement("div");
-    del.className="delete-btn";
-    del.innerText="Delete";
-
-    card.appendChild(text);
-    card.appendChild(del);
-    notifyList.appendChild(card);
-
-    addSwipe(card,n.id);
-  });
+    addSwipe(card,n.id)
+  })
 }
 
-/* 🔥 Desktop + Mobile swipe */
+/* mobile swipe + desktop hover */
 function addSwipe(card,id){
-  let startX=0;
-  let isDown=false;
+  let startX=0
 
-  // MOBILE
-  card.addEventListener("touchstart",e=>{
-    startX=e.touches[0].clientX;
-  });
+  card.addEventListener("touchstart",e=>startX=e.touches[0].clientX)
   card.addEventListener("touchmove",e=>{
-    if(e.touches[0].clientX-startX>50){
-      card.classList.add("swipe");
-    }
-  });
+    if(e.touches[0].clientX-startX>50) card.classList.add("swipe")
+  })
 
-  // DESKTOP
-  card.addEventListener("mousedown",e=>{
-    isDown=true;
-    startX=e.clientX;
-  });
-  card.addEventListener("mousemove",e=>{
-    if(!isDown) return;
-    if(e.clientX-startX>50){
-      card.classList.add("swipe");
-    }
-  });
-  card.addEventListener("mouseup",()=>isDown=false);
-  card.addEventListener("mouseleave",()=>isDown=false);
+  card.addEventListener("mouseenter",()=>card.classList.add("swipe"))
+  card.addEventListener("mouseleave",()=>card.classList.remove("swipe"))
 
-  card.querySelector(".delete-btn").onclick=()=>{
-    deleteWithUndo(id,card);
-  };
+  card.querySelector(".delete-btn").onclick=()=>deleteWithUndo(id,card)
 }
 
-/* delete + undo */
 function deleteWithUndo(id,card){
-  const notif = notifications.find(n=>n.id===id);
-  if(!notif) return;
-
-  if(!notif.read){
-    notif.read=true;
-    updateBadge();
-  }
-
-  card.innerHTML="<b>Deleted</b> — <span style='color:cyan;cursor:pointer'>UNDO</span>";
+  card.innerHTML="Deleted — <span style='color:cyan;cursor:pointer'>UNDO</span>"
 
   deleteTimer=setTimeout(()=>{
-    notifications=notifications.filter(n=>n.id!==id);
-    save();
-    render();
-  },2000);
+    fetch("/api/delete/"+id,{method:"POST"})
+    loadNotifications()
+  },2000)
 
   card.querySelector("span").onclick=()=>{
-    clearTimeout(deleteTimer);
-    render();
-  };
-}
-
-/* demo */
-if(notifications.length===0){
-  for(let i=1;i<=15;i++){
-    notifications.push({
-      id:Date.now()+i,
-      text:["Hi","New Message","Followed you","Commented","Good Morning"][i%5],
-      read:false
-    });
+    clearTimeout(deleteTimer)
+    loadNotifications()
   }
-  save();
 }
 
-/* bell */
 function toggleNotify(e){
- e.stopPropagation();
- bell.classList.add("shake");
- setTimeout(()=>bell.classList.remove("shake"),400);
- notify.classList.toggle("show");
+  e.stopPropagation()
+  bell.classList.add("shake")
+  setTimeout(()=>bell.classList.remove("shake"),400)
+  notify.classList.toggle("show")
 
- if(notify.classList.contains("show")){
-   notifications.forEach(n=>n.read=true);
-   save();
-   updateBadge();
-   render();
- }
+  if(notify.classList.contains("show")){
+    fetch("/api/read_all",{method:"POST"})
+    loadNotifications()
+  }
 }
 
-/* settings */
 function toggleSettings(e){
- e.stopPropagation();
- settings.classList.toggle("show");
+  e.stopPropagation()
+  settings.classList.toggle("show")
 }
 
-/* dark */
 function toggleDark(e){
- e.stopPropagation();
- document.body.classList.toggle("dark");
- document.body.classList.toggle("light");
+  e.stopPropagation()
+  document.body.classList.toggle("dark")
+  document.body.classList.toggle("light")
 }
 
-/* close */
 document.addEventListener("click",()=>{
- notify.classList.remove("show");
- settings.classList.remove("show");
-});
+  notify.classList.remove("show")
+  settings.classList.remove("show")
+})
 
-render();
-updateBadge();
+loadNotifications()
 </script>
 
 </body>
 </html>
+
 
 
 
