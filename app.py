@@ -85,26 +85,54 @@ def admin_off():
         set_maintenance(True)
     return redirect("/admin_panel")
 
-# ---------- SIGNUP ----------
+# ---------- SIGNUP (VALIDATED) ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if get_maintenance() and not session.get("admin"):
         return render_template("maintenance.html")
 
     if request.method == "POST":
-        u = request.form["username"]
-        e = request.form["email"]
-        p = generate_password_hash(request.form["password"])
+        u = request.form["username"].strip()
+        e = request.form["email"].strip()
+        p = request.form["password"]
+
+        # Username length check
+        if len(u) > 15:
+            flash("Username must be 15 characters or less")
+            return redirect("/signup")
 
         conn = db()
-        try:
-            conn.execute("INSERT INTO users(username,email,password) VALUES(?,?,?)",(u,e,p))
-            conn.commit()
+
+        # Username check
+        name_exists = conn.execute(
+            "SELECT 1 FROM users WHERE username=?", (u,)
+        ).fetchone()
+
+        if name_exists:
             conn.close()
-            return redirect("/login")
-        except:
+            flash("Username already exists")
+            return redirect("/signup")
+
+        # Email check
+        email_exists = conn.execute(
+            "SELECT 1 FROM users WHERE email=?", (e,)
+        ).fetchone()
+
+        if email_exists:
             conn.close()
             flash("Email already exists")
+            return redirect("/signup")
+
+        # Save user
+        hashed = generate_password_hash(p)
+        conn.execute(
+            "INSERT INTO users(username,email,password) VALUES(?,?,?)",
+            (u, e, hashed)
+        )
+        conn.commit()
+        conn.close()
+
+        return redirect("/login")
 
     return render_template("signup.html")
 
@@ -119,7 +147,7 @@ def login():
         p = request.form["password"]
 
         conn = db()
-        user = conn.execute("SELECT username,password FROM users WHERE email=?",(e,)).fetchone()
+        user = conn.execute("SELECT username,password FROM users WHERE email=?", (e,)).fetchone()
         conn.close()
 
         if not user:
@@ -166,4 +194,3 @@ def video():
 # =======================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
