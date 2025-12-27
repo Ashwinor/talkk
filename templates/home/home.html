@@ -2,6 +2,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔒 Prevent browser & Render caching -->
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>Talkk</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
@@ -54,6 +60,7 @@ const settings=document.getElementById("settings");
 const badge=document.getElementById("badge");
 const bell=document.getElementById("bell");
 
+/* create 100 fake notifications */
 for(let i=1;i<=100;i++){
  let div=document.createElement("div");
  div.className="notify-card";
@@ -87,7 +94,6 @@ function toggleDark(){
 
 </body>
 </html>
-
 
 
 

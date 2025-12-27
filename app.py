@@ -85,7 +85,7 @@ def admin_off():
         set_maintenance(True)
     return redirect("/admin_panel")
 
-# ---------- SIGNUP (VALIDATED) ----------
+# ---------- SIGNUP ----------
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if get_maintenance() and not session.get("admin"):
@@ -96,39 +96,26 @@ def signup():
         e = request.form["email"].strip()
         p = request.form["password"]
 
-        # Username length check
         if len(u) > 15:
             flash("Username must be 15 characters or less")
             return redirect("/signup")
 
         conn = db()
 
-        # Username check
-        name_exists = conn.execute(
-            "SELECT 1 FROM users WHERE username=?", (u,)
-        ).fetchone()
-
+        name_exists = conn.execute("SELECT 1 FROM users WHERE username=?", (u,)).fetchone()
         if name_exists:
             conn.close()
             flash("Username already exists")
             return redirect("/signup")
 
-        # Email check
-        email_exists = conn.execute(
-            "SELECT 1 FROM users WHERE email=?", (e,)
-        ).fetchone()
-
+        email_exists = conn.execute("SELECT 1 FROM users WHERE email=?", (e,)).fetchone()
         if email_exists:
             conn.close()
             flash("Email already exists")
             return redirect("/signup")
 
-        # Save user
         hashed = generate_password_hash(p)
-        conn.execute(
-            "INSERT INTO users(username,email,password) VALUES(?,?,?)",
-            (u, e, hashed)
-        )
+        conn.execute("INSERT INTO users(username,email,password) VALUES(?,?,?)",(u,e,hashed))
         conn.commit()
         conn.close()
 
@@ -136,7 +123,7 @@ def signup():
 
     return render_template("signup.html")
 
-# ---------- LOGIN (SMART ERRORS) ----------
+# ---------- LOGIN ----------
 @app.route("/login", methods=["GET","POST"])
 def login():
     if get_maintenance() and not session.get("admin"):
@@ -160,32 +147,32 @@ def login():
 
     return render_template("login.html")
 
-# ---------- LOGOUT ----------
+# ---------- LOGOUT (SECURE) ----------
 @app.route("/logout")
 def logout():
     session.clear()
-    r = redirect("/login")
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    return r
+    response = redirect("/login")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 # ---------- FORGOT ----------
 @app.route("/forgot")
 def forgot():
     return render_template("forgot.html")
 
-# ---------- HOME ----------
+# ---------- HOME (SECURE) ----------
 @app.route("/home")
 def home():
-    if not session.get("user"):
+    if "user" not in session:
         return redirect("/login")
     return render_template("home/home.html", user=session["user"])
 
 # ---------- VIDEO ----------
 @app.route("/video")
 def video():
-    if not session.get("user"):
+    if "user" not in session:
         return redirect("/login")
     return render_template("home/video.html")
 
