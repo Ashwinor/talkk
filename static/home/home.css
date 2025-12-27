@@ -3,22 +3,26 @@
 body{
   margin:0;
   font-family:Segoe UI, sans-serif;
-  background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
+  background:
+    radial-gradient(circle at 20% 20%, #2a0a6b, #000 70%),
+    radial-gradient(circle at 80% 80%, #004cff, #000 70%);
   color:white;
   overflow:hidden;
 }
 
-/* Light mode only changes background */
+/* Light mode = different wallpaper */
 body.light{
-  background:radial-gradient(circle at 20% 20%, #cfd9ff, #fff 60%);
+  background:
+    radial-gradient(circle at 20% 20%, #ff9af5, #ffffff 70%),
+    radial-gradient(circle at 80% 80%, #8fd3ff, #ffffff 70%);
   color:black;
 }
 
-/* Floating bubbles */
+/* Floating particles */
 .bg-bubble{
   position:absolute;
   border-radius:50%;
-  background:rgba(140,0,255,0.4);
+  background:rgba(0,180,255,0.35);
   filter:blur(40px);
   animation:float 12s infinite ease-in-out;
 }
@@ -37,8 +41,8 @@ body.light{
   display:flex;
   align-items:center;
   padding:0 15px;
-  backdrop-filter:blur(20px);
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(12px);
   z-index:5;
 }
 
@@ -59,6 +63,7 @@ body.light{
   cursor:pointer;
 }
 
+/* Shake */
 .shake{animation:shake .4s}
 @keyframes shake{
   0%{transform:rotate(0)}
@@ -73,9 +78,9 @@ body.light{
   position:fixed;
   top:60px;
   right:-300px;
-  width:250px;
+  width:260px;
   height:100%;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.7);
   backdrop-filter:blur(20px);
   padding:20px;
   transition:.5s;
@@ -83,14 +88,14 @@ body.light{
 }
 .notify-panel.show{right:0}
 
-/* Settings popup */
+/* SETTINGS */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(.7);
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(25px);
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(30px);
   padding:25px;
   border-radius:25px;
   opacity:0;
@@ -103,9 +108,8 @@ body.light{
   pointer-events:auto;
   transform:translate(-50%,-50%) scale(1);
 }
-
 .setting-btn{
-  background:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.18);
   padding:15px;
   border-radius:30px;
   margin:10px 0;
@@ -120,29 +124,45 @@ body.light{
   transform:translateX(-50%);
   width:90%;
   max-width:420px;
-  height:70px;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(30px);
+  height:75px;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(35px);
   border-radius:40px;
   display:flex;
   justify-content:space-around;
   align-items:center;
+  box-shadow:0 0 40px rgba(0,180,255,.25);
 }
 
+/* Liquid glass buttons */
 .nav-btn{
-  width:50px;
-  height:50px;
+  width:54px;
+  height:54px;
   border-radius:50%;
-  background:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.18);
   display:flex;
   justify-content:center;
   align-items:center;
   font-size:22px;
-  animation:liquid 4s infinite ease-in-out;
   cursor:pointer;
+  position:relative;
+  transition:.3s;
 }
 
+/* Liquid glow when hover */
+.nav-btn:hover{
+  background:rgba(0,170,255,.45);
+  box-shadow:
+    0 0 30px rgba(0,170,255,1),
+    0 0 60px rgba(0,170,255,.7);
+  transform:scale(1.25);
+}
+
+/* Floating effect */
+.nav-btn{
+  animation:liquid 4s infinite ease-in-out;
+}
 @keyframes liquid{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
+  50%{transform:translateY(-8px)}
 }
