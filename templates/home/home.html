@@ -36,12 +36,14 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<div class="notify-panel" id="notify">
+<!-- 🔔 Notifications Panel -->
+<div class="notify-panel" id="notify" onclick="event.stopPropagation()">
   <h3>Notifications</h3>
-  <div id="notifyList"></div>
+
+  <div id="notifyList" onclick="event.stopPropagation()"></div>
 
   <!-- UNDO BAR -->
-  <div id="undoBar" style="
+  <div id="undoBar" onclick="event.stopPropagation()" style="
     display:none;
     position:sticky;
     bottom:10px;
@@ -61,11 +63,13 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
+<!-- ⚙ Settings -->
 <div class="settings-panel" id="settings" onclick="event.stopPropagation()">
   <div class="setting-btn" onclick="toggleDark(event)">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
+<!-- Bottom Dock -->
 <div class="bottom-nav">
   <div class="nav-btn" onclick="window.location.href='/video'">📹<span>Video</span></div>
   <div class="nav-btn">💬<span>Chat</span></div>
@@ -84,7 +88,6 @@ const emptyMsg=document.getElementById("emptyMsg")
 let notifications=[]
 let deleteTimer=null
 
-/* LOAD FROM SERVER */
 async function loadNotifications(){
   const r=await fetch("/api/notifications")
   const d=await r.json()
@@ -117,7 +120,6 @@ function render(){
   })
 }
 
-/* mobile swipe + desktop hover */
 function addSwipe(card,id){
   let startX=0
 
@@ -132,7 +134,6 @@ function addSwipe(card,id){
   card.querySelector(".delete-btn").onclick=()=>deleteWithUndo(id,card)
 }
 
-/* DELETE + KEEP PANEL OPEN */
 function deleteWithUndo(id,card){
   card.style.opacity="0.4"
   card.style.pointerEvents="none"
@@ -180,7 +181,8 @@ function toggleDark(e){
   document.body.classList.toggle("light")
 }
 
-document.addEventListener("click",()=>{
+/* Close only when clicking outside */
+document.body.addEventListener("click",()=>{
   notify.classList.remove("show")
   settings.classList.remove("show")
 })
@@ -190,16 +192,3 @@ loadNotifications()
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
