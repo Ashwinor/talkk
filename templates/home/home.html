@@ -2,41 +2,37 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talkk Home</title>
+<title>Talkk</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
-<body>
 
-<!-- bubbles -->
-<div class="bubble" style="width:180px;height:180px;left:10%;top:20%"></div>
-<div class="bubble" style="width:240px;height:240px;left:70%;top:30%"></div>
-<div class="bubble" style="width:140px;height:140px;left:40%;top:70%"></div>
+<body class="dark">
 
-<!-- TOP BAR -->
+<div class="bubble" style="width:200px;height:200px;left:10%;top:20%"></div>
+<div class="bubble" style="width:260px;height:260px;left:70%;top:30%"></div>
+<div class="bubble" style="width:150px;height:150px;left:40%;top:70%"></div>
+
 <div class="top-bar">
   <div class="user">{{ user }}</div>
-  <input class="search" placeholder="Search users…">
+  <input class="search" placeholder="Search users">
   <div class="bell" onclick="toggleNotify()">🔔</div>
 </div>
 
-<!-- NOTIFICATIONS -->
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
   <p>No notifications found</p>
 </div>
 
-<!-- SETTINGS -->
 <div class="settings-panel" id="settings">
-  <div class="setting-btn" onclick="alert('Dark mode coming')">🌗 Dark Mode</div>
+  <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM BAR -->
 <div class="bottom-nav">
-  <div class="nav-btn" onclick="alert('Home coming')">🏠 <span>Home</span></div>
-  <div class="nav-btn" onclick="alert('Chat coming')">💬 <span>Chat</span></div>
-  <div class="nav-btn" onclick="alert('Profile coming')">👤 <span>Profile</span></div>
-  <div class="nav-btn" onclick="toggleSettings()">⚙️ <span>Settings</span></div>
+  <div class="nav-btn">🏠<span>Home</span></div>
+  <div class="nav-btn">💬<span>Chat</span></div>
+  <div class="nav-btn">👤<span>Profile</span></div>
+  <div class="nav-btn" onclick="toggleSettings()">⚙️<span>Settings</span></div>
 </div>
 
 <script>
@@ -44,10 +40,15 @@ function toggleSettings(){
   document.getElementById("settings").classList.toggle("show");
 }
 
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+}
+
 function toggleNotify(){
-  const p=document.getElementById("notify");
-  p.classList.add("show");
-  setTimeout(()=>p.classList.remove("show"),5000);
+  const n=document.getElementById("notify");
+  n.classList.add("show");
+  setTimeout(()=>n.classList.remove("show"),5000);
 }
 </script>
 

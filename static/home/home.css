@@ -1,26 +1,37 @@
 body{
   margin:0;
   font-family:Segoe UI, sans-serif;
-  background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
-  color:white;
   overflow:hidden;
+  color:white;
 }
 
-/* floating bubbles */
+/* ====== BACKGROUNDS ====== */
+body.dark{
+  background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
+}
+
+body.light{
+  background:radial-gradient(circle at 20% 20%, #003d5c, #000 65%);
+}
+
+/* ====== BUBBLES ====== */
 .bubble{
   position:absolute;
   border-radius:50%;
-  background:rgba(255,255,255,0.15);
-  animation:float 12s infinite ease-in-out;
+  opacity:0.35;
+  animation:float 14s infinite ease-in-out;
 }
+
+.dark .bubble{ background:#8f00ff; }
+.light .bubble{ background:#00f2fe; }
 
 @keyframes float{
-  0%{transform:translate(0,0);}
-  50%{transform:translate(30px,-40px);}
-  100%{transform:translate(0,0);}
+  0%{ transform:translate(0,0); }
+  50%{ transform:translate(40px,-40px); }
+  100%{ transform:translate(0,0); }
 }
 
-/* TOP BAR */
+/* ===== TOP BAR ===== */
 .top-bar{
   position:fixed;
   top:0;
@@ -29,14 +40,11 @@ body{
   display:flex;
   align-items:center;
   padding:0 15px;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(15px);
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(14px);
 }
 
-.user{
-  min-width:80px;
-  font-weight:bold;
-}
+.user{min-width:80px;font-weight:bold;}
 
 .search{
   flex:1;
@@ -47,34 +55,30 @@ body{
   outline:none;
 }
 
-.bell{
-  cursor:pointer;
-}
+/* ===== BELL ===== */
+.bell{cursor:pointer;}
 
-/* NOTIFICATION PANEL */
+/* ===== NOTIFY ===== */
 .notify-panel{
   position:fixed;
   top:60px;
-  right:-300px;
+  right:-280px;
   width:260px;
   height:100%;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,0.75);
   backdrop-filter:blur(20px);
   padding:20px;
   transition:.5s;
 }
+.notify-panel.show{ right:0; }
 
-.notify-panel.show{
-  right:0;
-}
-
-/* SETTINGS */
+/* ===== SETTINGS ===== */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(.7);
-  background:rgba(0,0,0,.85);
+  background:rgba(0,0,0,0.85);
   padding:25px;
   border-radius:25px;
   opacity:0;
@@ -82,7 +86,6 @@ body{
   transition:.4s;
   z-index:99;
 }
-
 .settings-panel.show{
   opacity:1;
   pointer-events:auto;
@@ -90,7 +93,7 @@ body{
 }
 
 .setting-btn{
-  background:rgba(255,255,255,.15);
+  background:rgba(255,255,255,.18);
   padding:16px;
   border-radius:30px;
   margin-bottom:12px;
@@ -98,7 +101,7 @@ body{
   text-align:center;
 }
 
-/* BOTTOM GLASS BAR */
+/* ===== BOTTOM DOCK ===== */
 .bottom-nav{
   position:fixed;
   bottom:15px;
@@ -107,7 +110,7 @@ body{
   width:90%;
   max-width:420px;
   height:75px;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.55);
   backdrop-filter:blur(20px);
   border-radius:40px;
   display:flex;
@@ -126,18 +129,13 @@ body{
   align-items:center;
   justify-content:center;
   transition:.3s;
-  color:white;
-  font-size:10px;
   cursor:pointer;
+  font-size:11px;
 }
-
 .nav-btn:hover{
-  background:rgba(0,180,255,.6);
-  box-shadow:0 0 20px rgba(0,180,255,.8);
+  background:rgba(0,180,255,.7);
+  box-shadow:0 0 25px rgba(0,180,255,.9);
   transform:scale(1.15);
 }
+.nav-btn span{margin-top:4px;opacity:.8;}
 
-.nav-btn span{
-  margin-top:4px;
-  opacity:.7;
-}
