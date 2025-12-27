@@ -3,73 +3,79 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Talkk Home</title>
-<link rel="stylesheet" href="/static/home/home.css">
+<link rel="stylesheet" href="/static/home/home.css?v=5">
 </head>
-
 <body>
 
-<!-- TALK START STYLE BACKGROUND -->
+<!-- BACKGROUND BUBBLES -->
 <div class="bg-bubble b1"></div>
 <div class="bg-bubble b2"></div>
 <div class="bg-bubble b3"></div>
 
+<!-- STARS -->
+<div id="stars"></div>
+
+<!-- TOP BAR -->
 <div class="top-bar">
     <div class="user">{{ user }}</div>
     <input class="search" placeholder="Search users…">
-    <div class="bell" onclick="toggleNotify()">🔔<span class="badge" id="badge">104</span></div>
+    <div class="bell" onclick="toggleNotify()">🔔<span id="badge">8</span></div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- NOTIFICATION PANEL -->
 <div class="notify-panel" id="notify">
     <h3>Notifications</h3>
-    <div class="notify-list" id="list"></div>
+    <div class="note">Hi 👋</div>
+    <div class="note">Welcome to Talkk</div>
+    <div class="note">You have a new follower</div>
+    <div class="note">Good night 🌙</div>
+    <div class="note">Let’s chat!</div>
 </div>
 
 <!-- SETTINGS -->
 <div class="settings-panel" id="settings">
-    <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Theme</div>
+    <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Mode</div>
     <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- GLASS DOCK -->
+<!-- BOTTOM GLASS DOCK -->
 <div class="bottom-nav">
-  <div class="nav-btn">📹<span>Video</span></div>
-  <div class="nav-btn">💬<span>Chat</span></div>
-  <div class="nav-btn">👤<span>Profile</span></div>
-  <div class="nav-btn" onclick="toggleSettings()">⚙️<span>Settings</span></div>
+    <div class="nav-btn">📹<span>Video</span></div>
+    <div class="nav-btn">💬<span>Chat</span></div>
+    <div class="nav-btn">👤<span>Profile</span></div>
+    <div class="nav-btn" onclick="toggleSettings()">⚙️<span>Settings</span></div>
 </div>
 
 <script>
-const notify = document.getElementById("notify");
-const badge = document.getElementById("badge");
-
-function toggleNotify(){
-  document.querySelector(".bell").classList.add("shake");
-  setTimeout(()=>document.querySelector(".bell").classList.remove("shake"),400);
-  notify.classList.toggle("show");
+// Floating stars
+for(let i=0;i<80;i++){
+  let s=document.createElement("div")
+  s.className="star"
+  s.style.left=Math.random()*100+"%"
+  s.style.top=Math.random()*100+"%"
+  document.body.appendChild(s)
 }
 
+// SETTINGS
 function toggleSettings(){
-  document.getElementById("settings").classList.toggle("show");
+  document.getElementById("settings").classList.toggle("show")
 }
-
-function toggleDark(){
-  document.body.classList.toggle("light");
-}
-
 document.body.addEventListener("click",e=>{
-  if(!e.target.closest(".notify-panel") && !e.target.closest(".bell")){
-    notify.classList.remove("show");
+  if(!e.target.closest(".settings-panel") && !e.target.closest(".nav-btn")){
+    document.getElementById("settings").classList.remove("show")
   }
-});
+})
 
-/* create fake messages */
-const list = document.getElementById("list");
-for(let i=1;i<=104;i++){
-  const div = document.createElement("div");
-  div.className="notify-item";
-  div.innerHTML="Message "+i+" • Hi, how are you?";
-  list.appendChild(div);
+// DARK MODE
+function toggleDark(){
+  document.body.classList.toggle("alt-bg")
+}
+
+// NOTIFY
+function toggleNotify(){
+  const p=document.getElementById("notify")
+  p.classList.toggle("show")
+  document.getElementById("badge").style.display="none"
 }
 </script>
 
