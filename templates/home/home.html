@@ -2,85 +2,116 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talkk Home</title>
-<link rel="stylesheet" href="/static/home/home.css?v=5">
+<title>Talkk</title>
+<link rel="stylesheet" href="/static/home/home.css">
 </head>
-<body>
 
-<!-- BACKGROUND BUBBLES -->
-<div class="bg-bubble b1"></div>
-<div class="bg-bubble b2"></div>
-<div class="bg-bubble b3"></div>
+<body class="dark" onclick="closePanels(event)">
 
 <!-- STARS -->
-<div id="stars"></div>
+<script>
+for(let i=0;i<60;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDelay=Math.random()*2+"s";
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- BUBBLES -->
+<div class="bubble" style="width:200px;height:200px;left:10%;top:20%"></div>
+<div class="bubble" style="width:260px;height:260px;left:70%;top:30%;animation-delay:2s"></div>
+<div class="bubble" style="width:150px;height:150px;left:40%;top:70%;animation-delay:4s"></div>
 
 <!-- TOP BAR -->
 <div class="top-bar">
-    <div class="user">{{ user }}</div>
-    <input class="search" placeholder="Search users…">
-    <div class="bell" onclick="toggleNotify()">🔔<span id="badge">8</span></div>
+  <div class="user">{{ user }}</div>
+  <input class="search" placeholder="Search users">
+
+  <div class="bell-wrap" onclick="toggleNotify(event)">
+    🔔
+    <div class="badge" id="badge">100</div>
+  </div>
 </div>
 
-<!-- NOTIFICATION PANEL -->
+<!-- NOTIFICATIONS -->
 <div class="notify-panel" id="notify">
-    <h3>Notifications</h3>
-    <div class="note">Hi 👋</div>
-    <div class="note">Welcome to Talkk</div>
-    <div class="note">You have a new follower</div>
-    <div class="note">Good night 🌙</div>
-    <div class="note">Let’s chat!</div>
+  <h3>Notifications</h3>
+  <p>You have new messages</p>
+  <p>Someone followed you</p>
+  <p>New chat request</p>
+  <p>More notifications…</p>
 </div>
 
 <!-- SETTINGS -->
 <div class="settings-panel" id="settings">
-    <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Mode</div>
-    <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
+  <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Theme</div>
+  <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM GLASS DOCK -->
+<!-- BOTTOM DOCK -->
 <div class="bottom-nav">
-    <div class="nav-btn">📹<span>Video</span></div>
-    <div class="nav-btn">💬<span>Chat</span></div>
-    <div class="nav-btn">👤<span>Profile</span></div>
-    <div class="nav-btn" onclick="toggleSettings()">⚙️<span>Settings</span></div>
+  <div class="nav-btn">🏠<span>Home</span></div>
+  <div class="nav-btn">💬<span>Chat</span></div>
+  <div class="nav-btn">👤<span>Profile</span></div>
+  <div class="nav-btn" onclick="toggleSettings(event)">⚙️<span>Settings</span></div>
 </div>
 
 <script>
-// Floating stars
-for(let i=0;i<80;i++){
-  let s=document.createElement("div")
-  s.className="star"
-  s.style.left=Math.random()*100+"%"
-  s.style.top=Math.random()*100+"%"
-  document.body.appendChild(s)
-}
+let notifyOpen=false;
+let settingsOpen=false;
+let count=100;
 
-// SETTINGS
-function toggleSettings(){
-  document.getElementById("settings").classList.toggle("show")
-}
-document.body.addEventListener("click",e=>{
-  if(!e.target.closest(".settings-panel") && !e.target.closest(".nav-btn")){
-    document.getElementById("settings").classList.remove("show")
+function toggleNotify(e){
+  e.stopPropagation();
+  const panel=document.getElementById("notify");
+  panel.classList.toggle("show");
+  notifyOpen=!notifyOpen;
+
+  if(notifyOpen){
+    count=0;
+    document.getElementById("badge").style.display="none";
   }
-})
-
-// DARK MODE
-function toggleDark(){
-  document.body.classList.toggle("alt-bg")
 }
 
-// NOTIFY
-function toggleNotify(){
-  const p=document.getElementById("notify")
-  p.classList.toggle("show")
-  document.getElementById("badge").style.display="none"
+function toggleSettings(e){
+  e.stopPropagation();
+  document.getElementById("settings").classList.toggle("show");
+  settingsOpen=!settingsOpen;
+}
+
+function closePanels(e){
+  if(notifyOpen){
+    document.getElementById("notify").classList.remove("show");
+    notifyOpen=false;
+  }
+  if(settingsOpen){
+    document.getElementById("settings").classList.remove("show");
+    settingsOpen=false;
+  }
+}
+
+/* simulate new messages */
+setInterval(()=>{
+  if(!notifyOpen){
+    count++;
+    const b=document.getElementById("badge");
+    b.style.display="flex";
+    b.textContent=count;
+  }
+},8000);
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
 }
 </script>
 
 </body>
 </html>
+
 
 
 
