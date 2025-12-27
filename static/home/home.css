@@ -1,19 +1,31 @@
+*{box-sizing:border-box;}
+
 body{
   margin:0;
   font-family:Segoe UI, sans-serif;
-  background:black;
+  background:radial-gradient(circle at 20% 20%, #2a0a6b, #000 60%);
   color:white;
   overflow:hidden;
 }
+
+/* Light mode only changes background */
 body.light{
-  background:#eee;
+  background:radial-gradient(circle at 20% 20%, #cfd9ff, #fff 60%);
   color:black;
 }
 
-canvas{
-  position:fixed;
-  inset:0;
-  z-index:-1;
+/* Floating bubbles */
+.bg-bubble{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(140,0,255,0.4);
+  filter:blur(40px);
+  animation:float 12s infinite ease-in-out;
+}
+@keyframes float{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(40px,-40px)}
+  100%{transform:translate(0,0)}
 }
 
 /* TOP BAR */
@@ -22,96 +34,95 @@ canvas{
   top:0;
   width:100%;
   height:60px;
-  background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(20px);
   display:flex;
   align-items:center;
-  gap:10px;
   padding:0 15px;
+  backdrop-filter:blur(20px);
+  background:rgba(0,0,0,0.6);
+  z-index:5;
 }
 
-.user{min-width:80px}
+.user{min-width:80px;font-weight:bold;}
 
 .search{
-  width:50%;
+  flex:1;
   max-width:300px;
+  margin:0 15px;
   padding:8px 15px;
   border-radius:20px;
   border:none;
-  outline:none;
 }
 
 .bell{
   margin-left:auto;
+  font-size:22px;
   cursor:pointer;
 }
+
 .shake{animation:shake .4s}
 @keyframes shake{
-  0%{transform:rotate(0deg)}
+  0%{transform:rotate(0)}
   25%{transform:rotate(10deg)}
   50%{transform:rotate(-10deg)}
   75%{transform:rotate(10deg)}
-  100%{transform:rotate(0deg)}
+  100%{transform:rotate(0)}
 }
 
-/* NOTIFICATION */
+/* Notification */
 .notify-panel{
   position:fixed;
   top:60px;
   right:-300px;
   width:250px;
   height:100%;
-  background:rgba(0,0,0,0.8);
+  background:rgba(0,0,0,0.85);
   backdrop-filter:blur(20px);
   padding:20px;
   transition:.5s;
+  z-index:6;
 }
 .notify-panel.show{right:0}
 
-/* SETTINGS */
+/* Settings popup */
 .settings-panel{
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(.7);
-  width:90%;
-  max-width:320px;
   background:rgba(0,0,0,.85);
   backdrop-filter:blur(25px);
-  border-radius:25px;
   padding:25px;
-  text-align:center;
+  border-radius:25px;
   opacity:0;
   pointer-events:none;
   transition:.4s;
-  z-index:99;
+  z-index:10;
 }
 .settings-panel.show{
   opacity:1;
   pointer-events:auto;
   transform:translate(-50%,-50%) scale(1);
 }
+
 .setting-btn{
-  background:rgba(255,255,255,.18);
-  padding:16px;
+  background:rgba(255,255,255,.2);
+  padding:15px;
   border-radius:30px;
-  margin-bottom:15px;
+  margin:10px 0;
   cursor:pointer;
-  font-weight:bold;
-  box-shadow:0 0 20px rgba(255,255,255,.25);
 }
 
-/* BOTTOM NAV */
+/* Glass Dock */
 .bottom-nav{
   position:fixed;
-  bottom:15px;
+  bottom:20px;
   left:50%;
   transform:translateX(-50%);
   width:90%;
-  max-width:400px;
-  height:65px;
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(20px);
+  max-width:420px;
+  height:70px;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(30px);
   border-radius:40px;
   display:flex;
   justify-content:space-around;
@@ -119,17 +130,19 @@ canvas{
 }
 
 .nav-btn{
-  width:45px;
-  height:45px;
+  width:50px;
+  height:50px;
   border-radius:50%;
   background:rgba(255,255,255,.2);
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
+  font-size:22px;
+  animation:liquid 4s infinite ease-in-out;
   cursor:pointer;
-  transition:.3s;
 }
-.nav-btn:hover{
-  background:rgba(255,255,255,.5);
-  transform:scale(1.15);
+
+@keyframes liquid{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
 }

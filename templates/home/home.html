@@ -1,69 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Talkk Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talkk Home</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
-
 <body>
 
-<!-- FLOATING PARTICLES -->
-<canvas id="particles"></canvas>
+<!-- Floating background -->
+<div class="bg-bubble" style="width:200px;height:200px;left:10%;top:20%"></div>
+<div class="bg-bubble" style="width:250px;height:250px;left:70%;top:30%"></div>
+<div class="bg-bubble" style="width:160px;height:160px;left:40%;top:70%"></div>
 
-<!-- TOP BAR -->
 <div class="top-bar">
-  <div class="user">{{ user }}</div>
-  <input class="search" placeholder="Search users...">
-  <div class="bell" onclick="toggleNotify()">🔔</div>
+    <div class="user">{{ user }}</div>
+    <input class="search" placeholder="Search users…">
+    <div class="bell" onclick="toggleNotify()">🔔</div>
 </div>
 
-<!-- NOTIFICATION PANEL -->
+<!-- Notification -->
 <div class="notify-panel" id="notify">
-  <h3>Notifications</h3>
-  <p>No notifications</p>
+    <h3>Notifications</h3>
+    <p>No notifications found</p>
 </div>
 
-<!-- CENTER SETTINGS -->
+<!-- SETTINGS POPUP -->
 <div class="settings-panel" id="settings">
-  <div class="setting-btn" onclick="toggleTheme()">Dark / Light</div>
-  <div class="setting-btn" onclick="location.href='/logout'">Logout</div>
+    <div class="setting-btn" onclick="toggleDark()">🌗 Toggle Dark Mode</div>
+    <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- Bottom Glass Dock -->
 <div class="bottom-nav">
-  <div class="nav-btn" onclick="alert('Video chat coming soon')">📹</div>
-  <div class="nav-btn" onclick="alert('Chat coming soon')">💬</div>
-  <div class="nav-btn" onclick="alert('Profile coming soon')">👤</div>
-  <div class="nav-btn" onclick="toggleSettings()">⚙️</div>
+    <div class="nav-btn" onclick="alert('Video not available')">📹</div>
+    <div class="nav-btn" onclick="alert('Chat not available')">💬</div>
+    <div class="nav-btn" onclick="alert('Profile not available')">👤</div>
+    <div class="nav-btn" onclick="toggleSettings()">⚙️</div>
 </div>
-
-<script src="/static/home/particles.js"></script>
 
 <script>
-let notifyTimer;
-
-function toggleNotify(){
-  let n=document.getElementById("notify");
-  let b=document.querySelector(".bell");
-  b.classList.add("shake");
-
-  setTimeout(()=>b.classList.remove("shake"),400);
-
-  n.classList.toggle("show");
-
-  clearTimeout(notifyTimer);
-  notifyTimer=setTimeout(()=>{
-    n.classList.remove("show");
-  },5000);
-}
-
 function toggleSettings(){
   document.getElementById("settings").classList.toggle("show");
 }
 
-function toggleTheme(){
+function toggleDark(){
   document.body.classList.toggle("light");
+}
+
+function toggleNotify(){
+  const b = document.querySelector(".bell");
+  const n = document.getElementById("notify");
+
+  b.classList.add("shake");
+  setTimeout(()=>b.classList.remove("shake"),400);
+
+  n.classList.add("show");
+  setTimeout(()=>n.classList.remove("show"),5000);
 }
 </script>
 
