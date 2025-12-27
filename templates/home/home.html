@@ -2,12 +2,9 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- 🔒 Prevent browser & Render caching -->
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-
 <title>Talkk</title>
 <link rel="stylesheet" href="/static/home/home.css">
 </head>
@@ -25,22 +22,20 @@ for(let i=0;i<60;i++){
 }
 </script>
 
-<!-- Animated bubbles -->
+<!-- bubbles -->
 <div class="bubble" style="width:200px;height:200px;left:10%;top:20%;background:#8f00ff;"></div>
 <div class="bubble" style="width:260px;height:260px;left:70%;top:30%;background:#00f2fe;"></div>
 <div class="bubble" style="width:150px;height:150px;left:40%;top:70%;background:#ff0080;"></div>
 
-<!-- Top Bar -->
 <div class="top-bar">
   <div class="user">{{ user }}</div>
   <input class="search" placeholder="Search users">
   <div class="bell-wrap" onclick="toggleNotify(event)">
     <div class="bell" id="bell">🔔</div>
-    <div class="badge" id="badge">0</div>
+    <div class="badge" id="badge"></div>
   </div>
 </div>
 
-<!-- Notifications -->
 <div class="notify-panel" id="notify">
   <h3>Notifications</h3>
   <div id="notifyList"></div>
@@ -49,13 +44,11 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- Settings -->
 <div class="settings-panel" id="settings" onclick="event.stopPropagation()">
   <div class="setting-btn" onclick="toggleDark(event)">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
 </div>
 
-<!-- Bottom Dock -->
 <div class="bottom-nav">
   <div class="nav-btn" onclick="window.location.href='/video'">📹<span>Video</span></div>
   <div class="nav-btn">💬<span>Chat</span></div>
@@ -71,23 +64,24 @@ const bell = document.getElementById("bell");
 const settings = document.getElementById("settings");
 const emptyMsg = document.getElementById("emptyMsg");
 
-/* ===============================
-   🔔 REAL NOTIFICATION SYSTEM
-================================*/
 let notifications = JSON.parse(localStorage.getItem("talkk_notifications") || "[]");
+let deleteTimer = null;
 
+/* save */
 function save(){
   localStorage.setItem("talkk_notifications", JSON.stringify(notifications));
 }
 
+/* badge */
 function updateBadge(){
   const unread = notifications.filter(n=>!n.read).length;
-  badge.textContent = unread;
+  badge.innerText = unread;
   badge.style.display = unread ? "block" : "none";
 }
 
-function renderNotifications(){
-  notifyList.innerHTML = "";
+/* render */
+function render(){
+  notifyList.innerHTML="";
 
   if(notifications.length===0){
     emptyMsg.style.display="block";
@@ -96,31 +90,63 @@ function renderNotifications(){
   emptyMsg.style.display="none";
 
   notifications.forEach(n=>{
-    const div = document.createElement("div");
-    div.className = "notify-card " + (n.read ? "" : "unread");
-    div.innerHTML = `
-      ${n.text}
-      <div class="delete-btn">🗑</div>
-    `;
+    const card = document.createElement("div");
+    card.className="notify-card "+(n.read?"":"unread");
 
-    let startX=0;
-    div.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-    div.addEventListener("touchmove",e=>{
-      if(e.touches[0].clientX - startX > 50){
-        div.classList.add("swipe");
-      }
-    });
+    const text = document.createElement("div");
+    text.innerText=n.text;
 
-    div.querySelector(".delete-btn").onclick=()=>{
-      notifications = notifications.filter(x=>x.id!==n.id);
-      save(); renderNotifications(); updateBadge();
-    };
+    const del = document.createElement("div");
+    del.className="delete-btn";
+    del.innerText="Delete";
 
-    notifyList.appendChild(div);
+    card.appendChild(text);
+    card.appendChild(del);
+    notifyList.appendChild(card);
+
+    addSwipe(card,n.id);
   });
 }
 
-/* Create demo notifications once */
+/* swipe */
+function addSwipe(card,id){
+  let startX=0;
+
+  card.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+  card.addEventListener("touchmove",e=>{
+    if(e.touches[0].clientX-startX>50) card.classList.add("swipe");
+  });
+
+  card.querySelector(".delete-btn").onclick=()=>{
+    deleteWithUndo(id,card);
+  };
+}
+
+/* delete + undo */
+function deleteWithUndo(id,card){
+  const notif = notifications.find(n=>n.id===id);
+  if(!notif) return;
+
+  if(!notif.read){
+    notif.read=true;
+    updateBadge();
+  }
+
+  card.innerHTML="<b>Deleted</b> — <span style='color:cyan;cursor:pointer'>UNDO</span>";
+
+  deleteTimer=setTimeout(()=>{
+    notifications=notifications.filter(n=>n.id!==id);
+    save();
+    render();
+  },2000);
+
+  card.querySelector("span").onclick=()=>{
+    clearTimeout(deleteTimer);
+    render();
+  };
+}
+
+/* demo */
 if(notifications.length===0){
   for(let i=1;i<=15;i++){
     notifications.push({
@@ -132,12 +158,7 @@ if(notifications.length===0){
   save();
 }
 
-renderNotifications();
-updateBadge();
-
-/* ===============================
-   🔔 Bell
-================================*/
+/* bell */
 function toggleNotify(e){
  e.stopPropagation();
  bell.classList.add("shake");
@@ -148,36 +169,36 @@ function toggleNotify(e){
    notifications.forEach(n=>n.read=true);
    save();
    updateBadge();
-   renderNotifications();
+   render();
  }
 }
 
-/* ===============================
-   ⚙ Settings
-================================*/
+/* settings */
 function toggleSettings(e){
  e.stopPropagation();
  settings.classList.toggle("show");
 }
 
-/* ===============================
-   🌗 Dark Mode
-================================*/
+/* dark */
 function toggleDark(e){
  e.stopPropagation();
  document.body.classList.toggle("dark");
  document.body.classList.toggle("light");
 }
 
-/* Close panels when clicking outside */
+/* close */
 document.addEventListener("click",()=>{
  notify.classList.remove("show");
  settings.classList.remove("show");
 });
+
+render();
+updateBadge();
 </script>
 
 </body>
 </html>
+
 
 
 
