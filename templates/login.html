@@ -9,6 +9,22 @@
 <div class="auth-card">
     <h2>Login</h2>
 
+    <!-- ERROR MESSAGE -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div style="
+          background: rgba(255,0,0,0.15);
+          color: #ff4d4d;
+          padding: 10px;
+          border-radius: 10px;
+          margin-bottom: 15px;
+          font-weight: bold;
+        ">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <form method="POST">
         <div class="input-box">
             <input type="email" name="email" placeholder="Email" required>
