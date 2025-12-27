@@ -108,14 +108,34 @@ function render(){
   });
 }
 
-/* swipe */
+/* 🔥 Desktop + Mobile swipe */
 function addSwipe(card,id){
   let startX=0;
+  let isDown=false;
 
-  card.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-  card.addEventListener("touchmove",e=>{
-    if(e.touches[0].clientX-startX>50) card.classList.add("swipe");
+  // MOBILE
+  card.addEventListener("touchstart",e=>{
+    startX=e.touches[0].clientX;
   });
+  card.addEventListener("touchmove",e=>{
+    if(e.touches[0].clientX-startX>50){
+      card.classList.add("swipe");
+    }
+  });
+
+  // DESKTOP
+  card.addEventListener("mousedown",e=>{
+    isDown=true;
+    startX=e.clientX;
+  });
+  card.addEventListener("mousemove",e=>{
+    if(!isDown) return;
+    if(e.clientX-startX>50){
+      card.classList.add("swipe");
+    }
+  });
+  card.addEventListener("mouseup",()=>isDown=false);
+  card.addEventListener("mouseleave",()=>isDown=false);
 
   card.querySelector(".delete-btn").onclick=()=>{
     deleteWithUndo(id,card);
@@ -198,6 +218,7 @@ updateBadge();
 
 </body>
 </html>
+
 
 
 
