@@ -45,7 +45,7 @@ for(let i=0;i<60;i++){
   <div id="notifyList"></div>
 </div>
 
-<!-- Settings Popup -->
+<!-- Settings -->
 <div class="settings-panel" id="settings" onclick="event.stopPropagation()">
   <div class="setting-btn" onclick="toggleDark(event)">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
@@ -65,7 +65,7 @@ const settings=document.getElementById("settings");
 const badge=document.getElementById("badge");
 const bell=document.getElementById("bell");
 
-/* Create 100 fake notifications */
+/* create 100 fake notifications */
 for(let i=1;i<=100;i++){
  let div=document.createElement("div");
  div.className="notify-card";
@@ -73,6 +73,7 @@ for(let i=1;i<=100;i++){
  document.getElementById("notifyList").appendChild(div);
 }
 
+/* Bell */
 function toggleNotify(e){
  e.stopPropagation();
  bell.classList.add("shake");
@@ -81,19 +82,21 @@ function toggleNotify(e){
  badge.style.display="none";
 }
 
+/* Settings */
 function toggleSettings(e){
  e.stopPropagation();
  settings.classList.toggle("show");
 }
 
+/* Dark / Light */
 function toggleDark(e){
  e.stopPropagation();
  document.body.classList.toggle("dark");
  document.body.classList.toggle("light");
 }
 
-/* Close panels when clicking anywhere else */
-document.addEventListener("click", () => {
+/* Click anywhere closes panels */
+document.addEventListener("click",()=>{
  notify.classList.remove("show");
  settings.classList.remove("show");
 });
