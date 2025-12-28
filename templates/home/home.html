@@ -34,14 +34,12 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- NOTIFICATION PANEL -->
-<div class="notify-panel" id="notify" onclick="event.stopPropagation()">
+<!-- 🔔 Notifications -->
+<div class="notify-panel show" id="notify" onclick="event.stopPropagation()">
   <h3>Notifications</h3>
-
   <div id="notifyList" onclick="event.stopPropagation()"></div>
 
-  <!-- UNDO BAR -->
-  <div id="undoBar" onclick="event.stopPropagation()" style="
+  <div id="undoBar" style="
     display:none;
     position:sticky;
     bottom:10px;
@@ -61,7 +59,7 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- MESSAGE VIEW -->
+<!-- Message viewer -->
 <div class="message-view" id="messageView">
   <div class="message-card">
     <div style="cursor:pointer;color:cyan;margin-bottom:15px" onclick="closeMessage()">← Back</div>
@@ -69,26 +67,11 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- SETTINGS -->
-<div class="settings-panel" id="settings" onclick="event.stopPropagation()">
-  <div class="setting-btn" onclick="toggleDark(event)">🌗 Toggle Theme</div>
-  <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
-</div>
-
-<div class="bottom-nav">
-  <div class="nav-btn" onclick="window.location.href='/video'">📹<span>Video</span></div>
-  <div class="nav-btn">💬<span>Chat</span></div>
-  <div class="nav-btn">👤<span>Profile</span></div>
-  <div class="nav-btn" onclick="toggleSettings(event)">⚙️<span>Settings</span></div>
-</div>
-
 <script>
 const notify=document.getElementById("notify")
 const notifyList=document.getElementById("notifyList")
 const badge=document.getElementById("badge")
 const bell=document.getElementById("bell")
-const settings=document.getElementById("settings")
-const emptyMsg=document.getElementById("emptyMsg")
 
 let notifications=[]
 let undoActive=false
@@ -96,7 +79,7 @@ let undoActive=false
 async function loadNotifications(){
   const r=await fetch("/api/notifications")
   const d=await r.json()
-  notifications=d.notifications || []
+  notifications=d.notifications||[]
   render()
   updateBadge()
 }
@@ -109,7 +92,7 @@ function updateBadge(){
 
 function render(){
   notifyList.innerHTML=""
-  if(notifications.length===0){
+  if(!notifications.length){
     emptyMsg.style.display="block"
     return
   }
@@ -120,49 +103,48 @@ function render(){
     card.className="notify-card "+(n.read?"":"unread")
     card.innerHTML=`${n.text}<div class="delete-btn">🗑</div>`
     notifyList.appendChild(card)
-
     addSwipe(card,n.id,n.text)
-  })
-
-  // stop accidental delete after rerender
-  document.querySelectorAll(".notify-card").forEach(c=>{
-    c.classList.remove("swipe-left")
   })
 }
 
-/* DESKTOP + MOBILE swipe */
+/* FINAL swipe logic */
 function addSwipe(card,id,text){
   let startX=0
-  let isDown=false
 
-  // mobile
-  card.addEventListener("touchstart",e=>startX=e.touches[0].clientX)
+  /* 📱 Mobile swipe */
+  card.addEventListener("touchstart",e=>{
+    startX=e.touches[0].clientX
+  })
   card.addEventListener("touchmove",e=>{
-    let diff=e.touches[0].clientX-startX
-    if(diff<-50) card.classList.add("swipe-left")
+    if(e.touches[0].clientX-startX<-50){
+      card.classList.add("swipe-left")
+    }
+  })
+  card.addEventListener("touchend",()=>{
+    if(card.classList.contains("swipe-left")){
+      deleteWithUndo(id,card)
+    }
   })
 
-  // desktop
-  card.addEventListener("mousedown",e=>{
-    isDown=true
-    startX=e.clientX
+  /* 🖥 Desktop right click */
+  card.addEventListener("contextmenu",e=>{
+    e.preventDefault()
+    card.classList.toggle("swipe-left")
   })
-  card.addEventListener("mousemove",e=>{
-    if(!isDown) return
-    if(e.clientX-startX<-50) card.classList.add("swipe-left")
-  })
-  card.addEventListener("mouseup",()=>isDown=false)
-  card.addEventListener("mouseleave",()=>isDown=false)
 
   card.querySelector(".delete-btn").onclick=(e)=>{
     e.stopPropagation()
     deleteWithUndo(id,card)
   }
 
-  card.onclick=()=>openMessage(text)
+  card.onclick=()=>{
+    if(!card.classList.contains("swipe-left")){
+      openMessage(text)
+    }
+  }
 }
 
-/* DELETE + UNDO LOCK */
+/* Delete + UNDO */
 function deleteWithUndo(id,card){
   if(undoActive) return
   undoActive=true
@@ -170,10 +152,6 @@ function deleteWithUndo(id,card){
   card.style.transform="translateX(-100%)"
   card.style.opacity="0"
 
-  showUndo(id)
-}
-
-function showUndo(id){
   const bar=document.getElementById("undoBar")
   bar.style.display="flex"
 
@@ -183,7 +161,7 @@ function showUndo(id){
       bar.style.display="none"
       loadNotifications()
     })
-  },4000)
+  },3000)
 
   document.getElementById("undoBtn").onclick=()=>{
     clearTimeout(timer)
@@ -193,18 +171,18 @@ function showUndo(id){
   }
 }
 
-/* MESSAGE */
+/* Message open */
 function openMessage(text){
   notify.classList.remove("show")
-  document.getElementById("messageText").innerText=text
-  document.getElementById("messageView").classList.add("show")
+  messageText.innerText=text
+  messageView.classList.add("show")
 }
 function closeMessage(){
-  document.getElementById("messageView").classList.remove("show")
+  messageView.classList.remove("show")
   notify.classList.add("show")
 }
 
-/* UI */
+/* Bell */
 function toggleNotify(e){
   e.stopPropagation()
   bell.classList.add("shake")
@@ -215,24 +193,10 @@ function toggleNotify(e){
     loadNotifications()
   }
 }
-function toggleSettings(e){
-  e.stopPropagation()
-  settings.classList.toggle("show")
-}
-function toggleDark(e){
-  e.stopPropagation()
-  document.body.classList.toggle("dark")
-  document.body.classList.toggle("light")
-}
-
-/* close outside */
-document.body.addEventListener("click",()=>{
-  notify.classList.remove("show")
-  settings.classList.remove("show")
-})
 
 loadNotifications()
 </script>
 
 </body>
 </html>
+
