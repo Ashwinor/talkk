@@ -250,3 +250,23 @@ body.light{
   max-width:420px;
   color:white;
 }
+
+/* ===========================
+   🔥 FIXES (Added at bottom)
+=========================== */
+
+/* Keep bottom nav always visible */
+.bottom-nav{
+  z-index:100;
+}
+
+/* Notifications should stop above dock */
+.notify-panel{
+  bottom:85px;
+  height:calc(100% - 145px);
+}
+
+/* Message viewer under dock */
+.message-view{
+  z-index:90;
+}
