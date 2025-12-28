@@ -98,9 +98,9 @@ body.light{
 .notify-panel{
   position:fixed;
   top:60px;
+  bottom:85px;     /* stops above dock */
   right:-320px;
   width:300px;
-  height:calc(100% - 60px);
   background:rgba(0,0,0,.8);
   backdrop-filter:blur(25px);
   padding:15px;
@@ -122,24 +122,24 @@ body.light{
   transition:.25s;
 }
 
-/* Swipe left animation */
+/* Swipe left */
 .notify-card.swipe-left{
   transform:translateX(-80px);
 }
 
-/* hover glow */
+/* Hover */
 .notify-card:hover{
   background:rgba(0,200,255,.45);
   box-shadow:0 0 25px rgba(0,200,255,.9);
 }
 
-/* unread glow */
+/* Unread */
 .notify-card.unread{
   box-shadow:0 0 15px rgba(0,200,255,.7);
   background:rgba(0,200,255,.25);
 }
 
-/* delete button */
+/* Delete button */
 .notify-card .delete-btn{
   position:absolute;
   right:-80px;
@@ -154,7 +154,6 @@ body.light{
   color:white;
   transition:.25s;
 }
-
 .notify-card.swipe-left .delete-btn{
   right:0;
 }
@@ -179,17 +178,6 @@ body.light{
   transform:translate(-50%,50%);
 }
 
-.setting-btn{
-  background:rgba(255,255,255,.18);
-  padding:15px;
-  border-radius:25px;
-  margin-bottom:15px;
-  text-align:center;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 0 25px rgba(0,255,255,.25);
-}
-
 /* BOTTOM DOCK */
 .bottom-nav{
   position:fixed;
@@ -205,25 +193,7 @@ body.light{
   display:flex;
   justify-content:space-around;
   align-items:center;
-  z-index:15;
-}
-
-.nav-btn{
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:rgba(255,255,255,.2);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  transition:.3s;
-}
-.nav-btn span{font-size:10px;}
-.nav-btn:hover{
-  background:rgba(0,255,255,.6);
-  transform:scale(1.2);
-  box-shadow:0 0 30px cyan;
+  z-index:100;  /* always on top */
 }
 
 /* MESSAGE VIEW */
@@ -235,12 +205,9 @@ body.light{
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:50;
+  z-index:90; /* under dock */
 }
-
-.message-view.show{
-  display:flex;
-}
+.message-view.show{display:flex;}
 
 .message-card{
   background:rgba(0,200,255,.25);
@@ -249,24 +216,4 @@ body.light{
   width:90%;
   max-width:420px;
   color:white;
-}
-
-/* ===========================
-   🔥 FIXES (Added at bottom)
-=========================== */
-
-/* Keep bottom nav always visible */
-.bottom-nav{
-  z-index:100;
-}
-
-/* Notifications should stop above dock */
-.notify-panel{
-  bottom:85px;
-  height:calc(100% - 145px);
-}
-
-/* Message viewer under dock */
-.message-view{
-  z-index:90;
 }
