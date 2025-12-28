@@ -12,7 +12,6 @@
 <body class="dark">
 
 <script>
-/* stars */
 for(let i=0;i<60;i++){
  let s=document.createElement("div");
  s.className="star";
@@ -22,7 +21,6 @@ for(let i=0;i<60;i++){
 }
 </script>
 
-<!-- bubbles -->
 <div class="bubble" style="width:200px;height:200px;left:10%;top:20%;background:#8f00ff;"></div>
 <div class="bubble" style="width:260px;height:260px;left:70%;top:30%;background:#00f2fe;"></div>
 <div class="bubble" style="width:150px;height:150px;left:40%;top:70%;background:#ff0080;"></div>
@@ -36,7 +34,7 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- 🔔 Notifications Panel -->
+<!-- NOTIFICATION PANEL -->
 <div class="notify-panel" id="notify" onclick="event.stopPropagation()">
   <h3>Notifications</h3>
 
@@ -63,7 +61,7 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- 📩 Message View -->
+<!-- MESSAGE VIEW -->
 <div class="message-view" id="messageView">
   <div class="message-card">
     <div style="cursor:pointer;color:cyan;margin-bottom:15px" onclick="closeMessage()">← Back</div>
@@ -71,7 +69,7 @@ for(let i=0;i<60;i++){
   </div>
 </div>
 
-<!-- ⚙ Settings -->
+<!-- SETTINGS -->
 <div class="settings-panel" id="settings" onclick="event.stopPropagation()">
   <div class="setting-btn" onclick="toggleDark(event)">🌗 Toggle Theme</div>
   <div class="setting-btn" onclick="window.location.href='/logout'">🚪 Logout</div>
@@ -93,7 +91,7 @@ const settings=document.getElementById("settings")
 const emptyMsg=document.getElementById("emptyMsg")
 
 let notifications=[]
-let deleteTimer=null
+let undoActive=false
 
 async function loadNotifications(){
   const r=await fetch("/api/notifications")
@@ -125,105 +123,109 @@ function render(){
 
     addSwipe(card,n.id,n.text)
   })
+
+  // stop accidental delete after rerender
+  document.querySelectorAll(".notify-card").forEach(c=>{
+    c.classList.remove("swipe-left")
+  })
 }
 
-/* iOS-style swipe + desktop right click */
+/* DESKTOP + MOBILE swipe */
 function addSwipe(card,id,text){
   let startX=0
+  let isDown=false
 
   // mobile
-  card.addEventListener("touchstart",e=>{
-    startX=e.touches[0].clientX
-  })
-
+  card.addEventListener("touchstart",e=>startX=e.touches[0].clientX)
   card.addEventListener("touchmove",e=>{
-    let diff = e.touches[0].clientX - startX
-    if(diff < -50) card.classList.add("swipe-left")
-  })
-
-  card.addEventListener("touchend",()=>{
-    if(card.classList.contains("swipe-left")){
-      deleteWithUndo(id,card)
-    }
+    let diff=e.touches[0].clientX-startX
+    if(diff<-50) card.classList.add("swipe-left")
   })
 
   // desktop
-  card.addEventListener("contextmenu",e=>{
-    e.preventDefault()
-    deleteWithUndo(id,card)
+  card.addEventListener("mousedown",e=>{
+    isDown=true
+    startX=e.clientX
   })
+  card.addEventListener("mousemove",e=>{
+    if(!isDown) return
+    if(e.clientX-startX<-50) card.classList.add("swipe-left")
+  })
+  card.addEventListener("mouseup",()=>isDown=false)
+  card.addEventListener("mouseleave",()=>isDown=false)
 
-  // open message
-  card.onclick=()=>{
-    openMessage(text)
+  card.querySelector(".delete-btn").onclick=(e)=>{
+    e.stopPropagation()
+    deleteWithUndo(id,card)
   }
+
+  card.onclick=()=>openMessage(text)
 }
 
-/* Delete animation */
+/* DELETE + UNDO LOCK */
 function deleteWithUndo(id,card){
+  if(undoActive) return
+  undoActive=true
+
   card.style.transform="translateX(-100%)"
   card.style.opacity="0"
+
   showUndo(id)
 }
 
-/* Undo bar */
 function showUndo(id){
-  let bar=document.getElementById("undoBar")
+  const bar=document.getElementById("undoBar")
   bar.style.display="flex"
 
-  let timer=setTimeout(()=>{
+  const timer=setTimeout(()=>{
     fetch("/api/delete/"+id,{method:"POST"}).then(()=>{
-      loadNotifications()
+      undoActive=false
       bar.style.display="none"
+      loadNotifications()
     })
-  },2000)
+  },4000)
 
   document.getElementById("undoBtn").onclick=()=>{
     clearTimeout(timer)
+    undoActive=false
     bar.style.display="none"
     loadNotifications()
   }
 }
 
-/* Bell */
-function toggleNotify(e){
-  e.stopPropagation()
-  bell.classList.add("shake")
-  setTimeout(()=>bell.classList.remove("shake"),400)
-  notify.classList.toggle("show")
-
-  if(notify.classList.contains("show")){
-    fetch("/api/read_all",{method:"POST"})
-    loadNotifications()
-  }
-}
-
-/* Message viewer */
+/* MESSAGE */
 function openMessage(text){
   notify.classList.remove("show")
   document.getElementById("messageText").innerText=text
   document.getElementById("messageView").classList.add("show")
 }
-
 function closeMessage(){
   document.getElementById("messageView").classList.remove("show")
   notify.classList.add("show")
 }
 
-/* Settings */
+/* UI */
+function toggleNotify(e){
+  e.stopPropagation()
+  bell.classList.add("shake")
+  setTimeout(()=>bell.classList.remove("shake"),400)
+  notify.classList.toggle("show")
+  if(notify.classList.contains("show")){
+    fetch("/api/read_all",{method:"POST"})
+    loadNotifications()
+  }
+}
 function toggleSettings(e){
   e.stopPropagation()
   settings.classList.toggle("show")
 }
-
-/* Dark */
 function toggleDark(e){
   e.stopPropagation()
   document.body.classList.toggle("dark")
   document.body.classList.toggle("light")
 }
 
-/* Close only outside */
+/* close outside */
 document.body.addEventListener("click",()=>{
   notify.classList.remove("show")
   settings.classList.remove("show")
